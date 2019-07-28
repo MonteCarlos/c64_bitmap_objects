@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="testLissaTextScroller" />
+		<Option pch_mode="2" />
+		<Option compiler="cc65" />
+		<Build>
+			<Target title="Release">
+				<Option output="testLissaTextScroller.prg" prefix_auto="0" extension_auto="0" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="cc65" />
+			</Target>
+		</Build>
+		<Compiler>
+			<Add directory="../include" />
+		</Compiler>
+		<Linker>
+			<Add option="lissa.lib" />
+			<Add directory="../" />
+		</Linker>
+		<Unit filename="../lissa/testLissaTextScroller/testTextScrollerMain.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../lissa/testLissaTextScroller/testTextScrollerMain.lst" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
