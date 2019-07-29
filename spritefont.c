@@ -1,4 +1,12 @@
 #include <stdio.h>
+#include <stdint.h>
+
+typedef struct{
+    union{
+        uint8_t bytes[64];
+        uint8_t rows[21][3];
+    };
+} spriteMatrix_t;
 
 unsigned char loBitsTable[] = {
     0x00, 0x07, 0x38, 0x3f, 0xc0, 0xc7, 0xf8, 0xff,
@@ -29,10 +37,18 @@ unsigned long int mkBitTriples (unsigned char num) {
 int main (void) {
     unsigned char number = 0xaa;
     unsigned long int result;
+    int i;
+
+    spriteMatrix_t *spritematrix = (void*)0x2000;
 
     PrintBits (number);
     putchar ('\n');
     result = mkBitTriples (number);
     PrintBits (result);
+    putchar ('\n');
+    for (i = 0; i<21; ++i){
+        PrintBits ((uint32_t)spritematrix->rows[i][0]<<16|(uint32_t)spritematrix->rows[i][1]<<8|spritematrix->rows[i][2]);
+        putchar ('\n');
+    }
     return 0;
 }
