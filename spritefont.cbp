@@ -2,12 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="testLissaTextScroller" />
+		<Option title="spritefont" />
 		<Option pch_mode="2" />
 		<Option compiler="cc65" />
 		<Build>
 			<Target title="Release">
-				<Option output="testLissaTextScroller.prg" prefix_auto="0" extension_auto="0" />
+				<Option output="spritefont.prg" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="cc65" />
@@ -17,13 +17,13 @@
 			<Add directory="../include" />
 		</Compiler>
 		<Linker>
-			<Add option="lissa.lib" />
 			<Add directory="../" />
 		</Linker>
-		<Unit filename="../lissa/testLissaTextScroller/testTextScrollerMain.c">
+		<Unit filename="_spritefont.s" />
+		<Unit filename="kickasmviewer.lol" />
+		<Unit filename="spritefont.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../lissa/testLissaTextScroller/testTextScrollerMain.lst" />
 		<Extensions>
 			<code_completion />
 			<envvars />
