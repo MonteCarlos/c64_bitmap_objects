@@ -20,17 +20,18 @@
     lda #>$2000
     sta ptr2+1
 
-    lda #0
-    sta hi+1
-
     lda #6
     sta ByteOfCharMatrixIdx
     asl
     asl
     asl
     adc ByteOfCharMatrixIdx ;x9
+    adc #8                  ;last byte of last sprite row
     sta ByteOfSpriteMatrixIdx
 gensprite:
+    lda #0
+    sta hi+1
+
     ldy ByteOfCharMatrixIdx
     lda (ptr1),y ;fetch byte from char matrix
 
@@ -65,23 +66,20 @@ gensprite:
     sta hi+1
 
     ldy ByteOfSpriteMatrixIdx
-    ldx #8
+    ldx #2
 :
-    lda hi+1
-    sta (ptr2),y
-    iny
-    lda hi
-    sta (ptr2),y
-    iny
     lda lo
     sta (ptr2),y
-    iny
+    dey
+    lda hi
+    sta (ptr2),y
+    dey
+    lda hi+1
+    sta (ptr2),y
+    dey
     dex
     bpl :-
-    tya
-    sec
-    sbc #18
-    sta ByteOfSpriteMatrixIdx
+    sty ByteOfSpriteMatrixIdx
 
     dec ByteOfCharMatrixIdx
     bpl gensprite
