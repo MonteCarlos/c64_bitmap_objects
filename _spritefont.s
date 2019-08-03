@@ -1,10 +1,11 @@
 .include "cc65runtime.sh"
 .include "myMacros.sh"
 
-.proc _generateSprites
-.export _generateSprites
+.proc _generatefont
+.export _generatefont
+.export generatefont = _generatefont
 .import _loBitsTable, _hiBitsTable
-    sei
+    ;sei
     lda 1
     pha
     lda #$33
@@ -85,7 +86,7 @@ gensprite:
     bpl gensprite
     pla
     sta 1
-    cli
+    ;cli
     rts
 ByteOfCharMatrixIdx:
     .res 1

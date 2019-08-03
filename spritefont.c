@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdint.h>
 
-void generateSprites(void);
+extern uint8_t loBitsTable[];
+extern uint8_t hiBitsTable[];
+
+void generatefont(void);
 
 typedef struct{
     union{
@@ -9,16 +12,6 @@ typedef struct{
         uint8_t rows[21][3];
     };
 } spriteMatrix_t;
-
-uint8_t loBitsTable[] = {
-    0x00, 0x07, 0x38, 0x3f, 0xc0, 0xc7, 0xf8, 0xff,
-    0x00, 0x07, 0x38, 0x3f, 0xc0, 0xc7, 0xf8, 0xff
-};
-
-uint8_t hiBitsTable[] = {
-    0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01,
-    0x0e, 0x0e, 0x0e, 0x0e, 0x0f, 0x0f, 0x0f, 0x0f
-};
 
 void PrintBits (uint32_t l) {
     int8_t i;
@@ -52,7 +45,9 @@ int main (void) {
     PrintBits (result);
     putchar ('\n');
 
-    generateSprites();
+    asm("sei");
+    generatefont();
+    asm("cli");
     for (i = 0; i<21; ++i){
         PrintBits (
                    ((uint32_t)spritematrix->rows[i][0]<<16)|
