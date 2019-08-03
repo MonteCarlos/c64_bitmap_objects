@@ -1,6 +1,10 @@
 .include "cc65runtime.sh"
 .include "myMacros.sh"
 
+spriteCount = 64
+charset = $d000
+sprites = $2000
+
 .proc _generatefont
 .export _generatefont
 .export generatefont = _generatefont
@@ -11,23 +15,19 @@
     lda #$33
     sta 1
 
-    lda #<$d000
+    lda #<(charset+(spriteCount-1)*8)
     sta ptr1
-    lda #>$d000
+    lda #>(charset+(spriteCount-1)*8)
     sta ptr1+1
 
-    lda #<$2000
+    lda #<(sprites+(spriteCount-1)*64)
     sta ptr2
-    lda #>$2000
+    lda #>(sprites+(spriteCount-1)*64)
     sta ptr2+1
-
+gensprite0:
     lda #6
     sta ByteOfCharMatrixIdx
-    asl
-    asl
-    asl
-    adc ByteOfCharMatrixIdx ;x9
-    adc #8                  ;last byte of last sprite row
+    lda #9*6+8
     sta ByteOfSpriteMatrixIdx
 gensprite:
     lda #0
@@ -57,6 +57,8 @@ gensprite:
     asl
     rol hi+1
     ora hi
+    ldy ByteOfCharMatrixIdx
+    eor (ptr1),y
     sta hi
     lda _hiBitsTable,x
     asl
@@ -64,8 +66,12 @@ gensprite:
     asl
     asl
     ora hi+1
+    lda #$ff
+    eor (ptr1),y
     sta hi+1
-
+    lda lo
+    eor (ptr1),y
+    sta lo
     ldy ByteOfSpriteMatrixIdx
     ldx #2
 :
@@ -84,6 +90,23 @@ gensprite:
 
     dec ByteOfCharMatrixIdx
     bpl gensprite
+
+    lax ptr1
+    axs #8
+    stx ptr1
+    bcs :+
+    dec ptr1+1
+:
+    lax ptr2
+    axs #$40
+    stx ptr2
+    bcc :+
+jmpgensprite0
+    jmp gensprite0
+:
+    lda #$1f
+    dcp ptr2+1
+    bne jmpgensprite0
     pla
     sta 1
     ;cli
