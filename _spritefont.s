@@ -67,6 +67,7 @@ gensprite:
     ora hi
     ;ldy ByteOfCharMatrixIdx
     ;and (ptr1),y
+    and #%01101101
     sta hi
     lda _hiBitsTable,x
     asl
@@ -75,12 +76,13 @@ gensprite:
     asl
     ora hi+1
     ;ora (ptr1),y
-
+    asl
+    asl
+    asl
+    ora hi+1
+    and #%11011011
     sta hi+1
-    lda lo
 
-    ;ora (ptr1),y
-    sta lo
     ldy ByteOfSpriteMatrixIdx
     ldx #2
 :
@@ -88,29 +90,25 @@ gensprite:
     lsr
     lsr
     ora lo
-    and #%10110110
+    and #%10010010
     sta (ptr2),y
-    ;asl lo
     dey
     lda hi
-    and #%01101101
+
     sta (ptr2),y
-    ;rol hi
     dey
     lda hi+1
-    asl
-    asl
-    asl
-    ora hi+1
-    and #%11011011
     sta (ptr2),y
-    ;rol hi+1
     dey
     dex
     bne :-
-    lda #0
+    lda lo
+    lsr
+    lsr
+    ora lo
     sta (ptr2),y
     dey
+    lda #0
     sta (ptr2),y
     dey
     sta (ptr2),y
