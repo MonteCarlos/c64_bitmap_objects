@@ -34,6 +34,14 @@ gensprite:
     sta hi+1
 
     ldy ByteOfCharMatrixIdx
+    lda ptr1+1
+    cmp #>(charset+','*8)
+    bne :+
+    lda ptr1
+    cmp #<(charset+','*8)
+    bne :+
+    iny
+:
     lda (ptr1),y ;fetch byte from char matrix
 
     ldx #15
@@ -59,7 +67,6 @@ gensprite:
     ora hi
     ;ldy ByteOfCharMatrixIdx
     ;and (ptr1),y
-    and #%01101101
     sta hi
     lda _hiBitsTable,x
     asl
@@ -68,11 +75,9 @@ gensprite:
     asl
     ora hi+1
     ;ora (ptr1),y
-    and #%11011011
 
     sta hi+1
     lda lo
-    and #%10110110
 
     ;ora (ptr1),y
     sta lo
@@ -80,16 +85,26 @@ gensprite:
     ldx #2
 :
     lda lo
+    lsr
+    lsr
+    ora lo
+    and #%10110110
     sta (ptr2),y
-    asl lo
+    ;asl lo
     dey
     lda hi
+    and #%01101101
     sta (ptr2),y
-    rol hi
+    ;rol hi
     dey
     lda hi+1
+    asl
+    asl
+    asl
+    ora hi+1
+    and #%11011011
     sta (ptr2),y
-    rol hi+1
+    ;rol hi+1
     dey
     dex
     bne :-
