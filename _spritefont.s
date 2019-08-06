@@ -15,41 +15,41 @@ sprites = $2000
     lda #$33
     sta 1
 
-    lda #<(charset+(spriteCount-1)*8)
+    lda #0
     sta ptr1
+    sta ptr2
     lda #>(charset+(spriteCount-1)*8)
     sta ptr1+1
-
-    lda #<(sprites+(spriteCount-1)*64)
-    sta ptr2
     lda #>(sprites+(spriteCount-1)*64)
     sta ptr2+1
 gensprite0:
-    lda #6
+    ;lda #6
+    lda #<(charset+(spriteCount-1)*8)+6
     sta ByteOfCharMatrixIdx
-    lda #9*6+8
+    ;lda #9*6+8
+    lda #<(sprites+(spriteCount-1)*64)+9*6+8
     sta ByteOfSpriteMatrixIdx
 gensprite:
     lda #0
     sta hi+1
 
     ldy ByteOfCharMatrixIdx
-    lda ptr1+1
-    cmp #>(charset+','*8)
-    bne :+
-    lda ptr1
-    cmp #<(charset+','*8)
-    bne :+
-    iny
-:
+    ;lda ptr1+1
+    ;cmp #>(charset+','*8)
+    ;bne :+
+    ;lda ptr1
+    ;cpy #<(charset+','*8)
+    ;bne :+
+    ;iny
+;:
     lda (ptr1),y ;fetch byte from char matrix
 
     ldx #15
     axs #0 ;puts lower 4 bits of a into x
-    ldy _loBitsTable,x
-    sty lo
     ldy _hiBitsTable,x
     sty hi
+    ldy _loBitsTable,x
+    sty lo
     lsr
     lsr
     lsr
@@ -65,8 +65,6 @@ gensprite:
     asl
     rol hi+1
     ora hi
-    ;ldy ByteOfCharMatrixIdx
-    ;and (ptr1),y
     and #%01101101
     sta hi
     lda _hiBitsTable,x
@@ -75,7 +73,6 @@ gensprite:
     asl
     asl
     ora hi+1
-    ;ora (ptr1),y
     asl
     asl
     asl
@@ -90,11 +87,10 @@ gensprite:
     lsr
     lsr
     ora lo
-    and #%10010010
+    and #%10110110
     sta (ptr2),y
     dey
     lda hi
-
     sta (ptr2),y
     dey
     lda hi+1
@@ -102,38 +98,48 @@ gensprite:
     dey
     dex
     bne :-
-    lda lo
-    lsr
-    lsr
-    ora lo
-    sta (ptr2),y
-    dey
-    lda #0
+    txa
     sta (ptr2),y
     dey
     sta (ptr2),y
+    dey
+    sta (ptr2),y
+    tya
+    bne :+
+    dec ptr2+1
+:
+    and #$3f
+    bne :+
+    dey
+:
     dey
     sty ByteOfSpriteMatrixIdx
 
-    dec ByteOfCharMatrixIdx
-    jpl gensprite
+    ;lda ByteOfCharMatrixIdx
+    ;and #$f8
+    ;sec
+    ;sbc #1
+    lda #$ff
+    dcp ByteOfCharMatrixIdx
+    jne gensprite
+ ;   dec ptr1+1
 
-    lax ptr1
-    axs #8
-    stx ptr1
-    bcs :+
-    dec ptr1+1
-:
-    lax ptr2
-    axs #$40
-    stx ptr2
-    bcc :+
-jmpgensprite0
-    jmp gensprite0
-:
-    lda #$1f
-    dcp ptr2+1
-    bne jmpgensprite0
+    ;lax ptr1
+    ;axs #8
+    ;stx ptr1
+    ;bcs :+
+    ;dec ptr1+1
+;:
+    ;lax ptr2
+    ;axs #$40
+    ;stx ptr2
+    ;bcc :+
+;jmpgensprite0
+;    jmp gensprite0
+;:
+    lda #$d0
+    dcp ptr1+1
+    jne gensprite0
     pla
     sta 1
     ;cli
