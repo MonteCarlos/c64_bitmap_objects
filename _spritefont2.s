@@ -146,4 +146,3 @@ expand:
 
 .export sprmcol2 = *
     .byte   $00
-

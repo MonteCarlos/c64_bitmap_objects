@@ -12,17 +12,44 @@
 				<Option type="1" />
 				<Option compiler="cc65" />
 			</Target>
+			<Target title="sprfont_wth_viewer">
+				<Option output="spritefont_wth_viewer.prg" prefix_auto="0" extension_auto="0" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="cc65" />
+				<Linker>
+					<Add option="-C spritefont.cfg" />
+				</Linker>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add directory="../include" />
 		</Compiler>
 		<Linker>
+			<Add option="-t none" />
 			<Add directory="../" />
 		</Linker>
+		<Unit filename="_spritefont.lst" />
 		<Unit filename="_spritefont.s" />
-		<Unit filename="kickasmviewer.lol" />
 		<Unit filename="spritefont.c">
 			<Option compilerVar="CC" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="spritefont.cfg" />
+		<Unit filename="spritefont_wth_viewer.map">
+			<Option target="sprfont_wth_viewer" />
+		</Unit>
+		<Unit filename="tables.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="viewer.s">
+			<Option target="sprfont_wth_viewer" />
+		</Unit>
+		<Unit filename="viewer_startup.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Extensions>
 			<code_completion />
