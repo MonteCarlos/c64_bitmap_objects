@@ -46,15 +46,14 @@ gensprite:
     ldx #15
     axs #0 ;puts lower 4 bits of a into x
     jsr expand
-
     ldy ByteOfSpriteMatrixIdx
     ldx #2
-:
+setsprite:
     lda lo
     lsr
     lsr
     ora lo
-    and #%10110110
+    ;and #%10110110
     sta (ptr2),y
     dey
     lda hi
@@ -63,15 +62,6 @@ gensprite:
     lda hi+1
     sta (ptr2),y
     dey
-    dex
-    bne :-
-
-    txa
-    sta (ptr2),y
-    dey
-    sta (ptr2),y
-    dey
-    sta (ptr2),y
     tya
     bne :+
     dec ptr2+1
@@ -80,6 +70,9 @@ gensprite:
     bne :+
     dey
 :
+    dex
+    bpl setsprite
+
     dey
     sty ByteOfSpriteMatrixIdx
 nextCharLine:
@@ -112,7 +105,7 @@ expand:
     asl
     rol hi+1
     ora hi
-    and #%01101101
+    ;and #%01101101
     sta hi
     lda _hiBitsTable,x
     asl
@@ -124,7 +117,7 @@ expand:
     asl
     asl
     ora hi+1
-    and #%11011011
+    ;and #%11011011
     sta hi+1
     rts
 
@@ -133,7 +126,7 @@ expand:
 
 .SEGMENT "SETTINGS"
 .export multicol = *
-    .byte   $00
+    .byte   $ff
 
 .export bgcol = *
     .byte   $0b
@@ -142,7 +135,7 @@ expand:
     .byte   $07
 
 .export sprmcol1 = *
-    .byte   $00
+    .byte   $0a
 
 .export sprmcol2 = *
-    .byte   $00
+    .byte   $08
