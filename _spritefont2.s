@@ -45,22 +45,27 @@ gensprite:
 
     ldx #15
     axs #0 ;puts lower 4 bits of a into x
-    jsr expand
+    cpx #8 ;if bit 3 is set, then also set bits 4-7
+    bcc :+
+    axs #$10 ;set upper 4 bits
+:
+    txa
+    ;jsr expand
     ldy ByteOfSpriteMatrixIdx
     ldx #2
 setsprite:
-    lda lo
-    lsr
-    lsr
-    ora lo
+    ;lda lo
+    ;lsr
+    ;lsr
+    ;ora lo
     ;and #%10110110
     sta (ptr2),y
     dey
-    lda hi
-    sta (ptr2),y
+    ;lda hi
+    ;sta (ptr2),y
     dey
-    lda hi+1
-    sta (ptr2),y
+    ;lda hi+1
+    ;sta (ptr2),y
     dey
     tya
     bne :+
@@ -70,10 +75,10 @@ setsprite:
     bne :+
     dey
 :
-    dex
-    bpl setsprite
+    ;dex
+    ;bpl setsprite
 
-    dey
+    ;dey
     sty ByteOfSpriteMatrixIdx
 nextCharLine:
     lda #$ff
@@ -126,7 +131,7 @@ expand:
 
 .SEGMENT "SETTINGS"
 .export multicol = *
-    .byte   $ff
+    .byte   $00
 
 .export bgcol = *
     .byte   $0b
