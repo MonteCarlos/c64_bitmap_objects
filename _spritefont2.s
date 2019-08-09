@@ -78,13 +78,18 @@ setsprite:
 
     ;ldx #$f8
     lda ByteOfCharMatrixIdx
-    ;axs #$01
-    ;txa
+    bne :+
+    pha
+    lda #$cf
+    dcp ptr1+1
+    pla
+    bcs finished
+:
     and #$f8
     dcp ByteOfCharMatrixIdx
     beq gensprite
     bcc gensprite
-
+nextpage:
     tya
     sec
     sbc #64-(8*3)
@@ -93,12 +98,11 @@ setsprite:
 :
     sta ByteOfSpriteMatrixIdx
 
-    lda ByteOfCharMatrixIdx
-    cmp #$08
-    bcs gensprite
-    ;lda #$cf
-    ;dcp ptr1+1
-    ;bne gensprite0
+    ;lda ByteOfCharMatrixIdx
+    ;cmp #$01
+    ;bcs gensprite
+    jmp gensprite
+finished:
     rts
 
 
