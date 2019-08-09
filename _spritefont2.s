@@ -10,7 +10,7 @@ sprites = $2000
 .export generatefont = _generatefont
 .import _loBitsTable, _hiBitsTable
 
-lo = tmp1
+bitmask = tmp1
 hi = tmp2
 ByteOfCharMatrixIdx = 2
 ByteOfSpriteMatrixIdx = 3
@@ -27,103 +27,78 @@ ByteOfSpriteMatrixIdx = 3
     sta ptr2+1
 gensprite0:
     ;lda #6
-    lda #<(charset+(spriteCount-1)*8)+6
+    lda #<(charset+(spriteCount-1)*8)+7
     sta ByteOfCharMatrixIdx
     ;lda #9*6+8
-    lda #<(sprites+(spriteCount-1)*64)+9*6+8
+    lda #<(sprites+(spriteCount-1)*64)+62
     sta ByteOfSpriteMatrixIdx
 gensprite:
-    lax #0
-    sax hi+1
 
-    ldx #7
-    lda ByteOfCharMatrixIdx
-    axs #7
-    beq nextCharLine
-    tay
+    ldy ByteOfCharMatrixIdx
+
     lda (ptr1),y ;fetch byte from char matrix
 
-    ldx #15
+    ldx #16
+    stx bitmask
+    dex
     axs #0 ;puts lower 4 bits of a into x
     cpx #8 ;if bit 3 is set, then also set bits 4-7
     bcc :+
     axs #$10 ;set upper 4 bits
 :
-    txa
-    ;jsr expand
+    and #$f0
+    bit bitmask
+    beq :+
+    ora #$0f
+:
+    pha
+
     ldy ByteOfSpriteMatrixIdx
-    ldx #2
+
 setsprite:
-    ;lda lo
-    ;lsr
-    ;lsr
-    ;ora lo
-    ;and #%10110110
+
+    txa
     sta (ptr2),y
     dey
+    lda #0
+    cpx #8
+    bcc :+
+    lda #$ff
+:   sta (ptr2),y
     ;lda hi
     ;sta (ptr2),y
     dey
+    pla
+    sta (ptr2),y
     ;lda hi+1
     ;sta (ptr2),y
+    ;dey
     dey
+    sty ByteOfSpriteMatrixIdx
+
+    ;ldx #$f8
+    lda ByteOfCharMatrixIdx
+    ;axs #$01
+    ;txa
+    and #$f8
+    dcp ByteOfCharMatrixIdx
+    beq gensprite
+    bcc gensprite
+
     tya
-    bne :+
+    sec
+    sbc #64-(8*3)
+    bcs :+
     dec ptr2+1
 :
-    and #$3f
-    bne :+
-    dey
-:
-    ;dex
-    ;bpl setsprite
+    sta ByteOfSpriteMatrixIdx
 
-    ;dey
-    sty ByteOfSpriteMatrixIdx
-nextCharLine:
-    lda #$ff
-    dcp ByteOfCharMatrixIdx
-    bne gensprite
-
-    lda #$cf
-    dcp ptr1+1
-    bne gensprite0
-    rts
-
-expand:
-    ldy _hiBitsTable,x
-    sty hi
-    ldy _loBitsTable,x
-    sty lo
-    lsr
-    lsr
-    lsr
-    lsr
-    tax
-    lda _loBitsTable,x
-    asl
-    rol hi+1
-    asl
-    rol hi+1
-    asl
-    rol hi+1
-    asl
-    rol hi+1
-    ora hi
-    ;and #%01101101
-    sta hi
-    lda _hiBitsTable,x
-    asl
-    asl
-    asl
-    asl
-    ora hi+1
-    asl
-    asl
-    asl
-    ora hi+1
-    ;and #%11011011
-    sta hi+1
+    lda ByteOfCharMatrixIdx
+    cmp #$08
+    bcs gensprite
+    ;lda #$cf
+    ;dcp ptr1+1
+    ;bne gensprite0
     rts
 
 
