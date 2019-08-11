@@ -46,7 +46,20 @@ gensprite:
     ;sta ptr1+1
     dec ptr1+1
     :
+    ldx charnum
+
     lda (ptr1),y ;fetch byte from char matrix
+    lsr
+    ;cpx #('1' )
+    ;beq correct
+    ;cpx #('j' & $3f)
+    ;beq correct
+    cpx #'i'&$3f
+    bcc :+
+    cpx #'j'&$2f+1
+    bcs :+
+    lda i_matrix-(('i' & $3f)*8),y
+:
     ldy #0
     ldx #15
     axs #0 ;puts lower 4 bits of a into x
@@ -64,25 +77,10 @@ gensprite:
 :
     sta hi+1
 
-    ;ldx #0
     lda ByteOfCharMatrixIdx
-    cmp #<(charset+('k'*8))
-    bcc :+
-    cmp #<(charset+('k'*8))+8
-    bcs :+
-    ldx #2
-    bne setsprite0
-:
     and #7
     tay
     ldx reptable,y
-    ;cmp #4
-    ;bne :+
-    ;ldx #6
-;:   ;cmp #2
-    ;bne :+
-    ;ldx #3
-;:
 setsprite0:
     ldy ByteOfSpriteMatrixIdx
 setsprite:
@@ -113,6 +111,7 @@ setsprite:
     and #7
     bne gensprite
 nextpage:
+
     tya
     and #$3f
     tax
@@ -129,16 +128,37 @@ fillrest:
     dec ptr2+1
 :
     sty ByteOfSpriteMatrixIdx
+    dec charnum
 
     ;lda ByteOfCharMatrixIdx
     ;cmp #$08
-    bne gensprite
+    jpl gensprite
 finished:
     rts
 bitmask:
     .byte $10
 reptable:
-    .byte 0,0,0,0,3,3,0,0
+    .byte 0,0,4,0,4,0,0,0
+charnum:
+    .byte 36
+i_matrix:
+    .byte %11111111
+    .byte %00110000
+    .byte %00110000
+    .byte %00110000
+    .byte %00110000
+    .byte %00110000
+    .byte %11111111
+    .byte 0
+j_matrix:
+    .byte %11111111
+    .byte %00000111
+    .byte %00000111
+    .byte %00000111
+    .byte %00000111
+    .byte %00001110
+    .byte %11111100
+    .byte 0
 .endproc
 
 .SEGMENT "SETTINGS"
