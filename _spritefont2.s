@@ -49,33 +49,43 @@ gensprite:
     ldx charnum
 
     lda (ptr1),y ;fetch byte from char matrix
-    lsr
+
     ;cpx #('1' )
     ;beq correct
     ;cpx #('j' & $3f)
     ;beq correct
-    cpx #'i'&$3f
-    bcc :+
-    cpx #'j'&$2f+1
-    bcs :+
-    lda i_matrix-(('i' & $3f)*8),y
-:
+    ;cpx #'j'&$3f
+    ;bcc :+
+    ;cpx #'j'&$2f+1
+    ;bcs :+
+    ;lda i_matrix-(('i' & $3f)*8),y
+;:
+    lsr
+
     ldy #0
     ldx #15
     axs #0 ;puts lower 4 bits of a into x
     cpx #8 ;if bit 3 is set, then also set bits 4-7
     bcc :+
-    ldy #$ff
+    ldy #$fe
     axs #$10 ;set upper 4 bits
 :
     stx lo
-    sty hi
     and #$f0
     bit bitmask
     beq :+
+    iny
     ora #$0f
 :
     sta hi+1
+    cpy #$01
+    bne :+
+    ldy #$f0
+:   cpy #$fe
+    bne :+
+    ldy #$0f
+:
+    sty hi
 
     lda ByteOfCharMatrixIdx
     and #7
@@ -143,21 +153,30 @@ charnum:
     .byte 36
 i_matrix:
     .byte %11111111
-    .byte %00110000
-    .byte %00110000
-    .byte %00110000
-    .byte %00110000
-    .byte %00110000
+    .byte %00010000
+    .byte %00010000
+    .byte %00010000
+    .byte %00010000
+    .byte %00010000
     .byte %11111111
     .byte 0
 j_matrix:
     .byte %11111111
-    .byte %00000111
-    .byte %00000111
-    .byte %00000111
-    .byte %00000111
-    .byte %00001110
-    .byte %11111100
+    .byte %00011000
+    .byte %00011000
+    .byte %00011000
+    .byte %11101000
+    .byte %11111000
+    .byte %01111000
+    .byte 0
+k_matrix:
+    .byte %11111111
+    .byte %00001000
+    .byte %00001000
+    .byte %00001000
+    .byte %11101000
+    .byte %11111000
+    .byte %01111000
     .byte 0
 .endproc
 
