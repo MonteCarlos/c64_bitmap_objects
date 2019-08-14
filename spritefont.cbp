@@ -21,6 +21,15 @@
 					<Add option="-C spritefont.cfg" />
 				</Linker>
 			</Target>
+			<Target title="sprfont_wth_viewer2">
+				<Option output="spritefont_wth_viewer2.prg" prefix_auto="0" extension_auto="0" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="cc65" />
+				<Linker>
+					<Add option="-C spritefont.cfg" />
+				</Linker>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add directory="../include" />
@@ -29,21 +38,29 @@
 			<Add option="-t none" />
 			<Add directory="../" />
 		</Linker>
-		<Unit filename="_spritefont.lst" />
-		<Unit filename="_spritefont.s" />
+		<Unit filename="_spritefont.lst">
+			<Option target="Release" />
+			<Option target="sprfont_wth_viewer" />
+		</Unit>
+		<Unit filename="_spritefont.s">
+			<Option target="Release" />
+			<Option target="sprfont_wth_viewer" />
+		</Unit>
+		<Unit filename="_spritefont2.lst" />
+		<Unit filename="_spritefont2.s" />
 		<Unit filename="spritefont.c">
 			<Option compilerVar="CC" />
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="spritefont.cfg" />
-		<Unit filename="spritefont_wth_viewer.map">
-			<Option target="sprfont_wth_viewer" />
-		</Unit>
+		<Unit filename="spritefont_wth_viewer.map" />
+		<Unit filename="spritefont_wth_viewer2.map" />
 		<Unit filename="tables.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="viewer.s">
 			<Option target="sprfont_wth_viewer" />
+			<Option target="sprfont_wth_viewer2" />
 		</Unit>
 		<Unit filename="viewer_startup.c">
 			<Option compilerVar="CC" />

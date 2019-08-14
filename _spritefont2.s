@@ -54,13 +54,27 @@ gensprite:
     ;beq correct
     ;cpx #('j' & $3f)
     ;beq correct
-    ;cpx #'j'&$3f
-    ;bcc :+
-    ;cpx #'j'&$2f+1
-    ;bcs :+
-    ;lda i_matrix-(('i' & $3f)*8),y
-;:
-    lsr
+    cpx #'j'&$3f
+    bne :+
+    cmp #0
+    beq :+
+    bit bitmask
+    bne :+
+    eor #%00001010
+:
+    cpx #'k'&$3f
+    bcc :+
+    cpx #'k'&$2f+1
+    bcs :+
+    lda k_matrix-(('k' & $3f)*8),y
+:
+    cpx #'m'&$3f
+    bcc :+
+    cpx #'o'&$3f
+    bcs :+
+    lda m_matrix-(('m' & $3f)*8),y
+:
+    ;lsr
 
     ldy #0
     ldx #15
@@ -78,10 +92,11 @@ gensprite:
     ora #$0f
 :
     sta hi+1
-    cpy #$01
+    tya
+    cmp #$01
     bne :+
     ldy #$f0
-:   cpy #$fe
+:   cmp #$fe
     bne :+
     ldy #$0f
 :
@@ -119,7 +134,7 @@ setsprite:
     lda #0
 :   dec ByteOfCharMatrixIdx
     and #7
-    bne gensprite
+    jne gensprite
 nextpage:
 
     tya
@@ -147,17 +162,19 @@ finished:
     rts
 bitmask:
     .byte $10
+bitmask2:
+    .byte $30
 reptable:
     .byte 0,0,4,0,4,0,0,0
 charnum:
     .byte 36
 i_matrix:
     .byte %11111111
-    .byte %00010000
-    .byte %00010000
-    .byte %00010000
-    .byte %00010000
-    .byte %00010000
+    .byte %01100000
+    .byte %01100000
+    .byte %01100000
+    .byte %01100000
+    .byte %01100000
     .byte %11111111
     .byte 0
 j_matrix:
@@ -170,14 +187,33 @@ j_matrix:
     .byte %01111000
     .byte 0
 k_matrix:
-    .byte %11111111
-    .byte %00001000
-    .byte %00001000
-    .byte %00001000
-    .byte %11101000
-    .byte %11111000
-    .byte %01111000
+    .byte %00100111
+    .byte %00111111
+    .byte %00110000
+    .byte %00100000
+    .byte %00110000
+    .byte %00111111
+    .byte %00100111
     .byte 0
+m_matrix:
+    .byte %11100100
+    .byte %11100110
+    .byte %01111110
+    .byte %01111110
+    .byte %01100110
+    .byte %01100110
+    .byte %01100110
+    .byte 0
+n_matrix:
+    .byte %11111100
+    .byte %11100110
+    .byte %01100110
+    .byte %01100110
+    .byte %01100110
+    .byte %01100110
+    .byte %01100110
+    .byte 0
+
 .endproc
 
 .SEGMENT "SETTINGS"
