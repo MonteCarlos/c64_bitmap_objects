@@ -100,6 +100,15 @@ gensprite:
     bne :+
     ldy #$0f
 :
+    ldx charnum
+    cpx #'i'&$3f
+    bne :+
+    lda hi+1
+    cmp #%00011111
+    bne :+
+    ldy #%00011000
+:
+
     sty hi
 
     lda ByteOfCharMatrixIdx
