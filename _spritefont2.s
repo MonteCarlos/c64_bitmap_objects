@@ -54,38 +54,39 @@ gensprite:
     ;beq correct
     ;cpx #('j' & $3f)
     ;beq correct
-    cpx #'j'&$3f
-    bne :+
-    cmp #0
-    beq :+
-    bit bitmask
-    bne :+
-    eor #%00001010
-:
-    cpx #'k'&$3f
-    bcc :+
-    cpx #'k'&$2f+1
-    bcs :+
-    lda k_matrix-(('k' & $3f)*8),y
-:
-    cpx #'m'&$3f
-    bcc :+
-    cpx #'o'&$3f
-    bcs :+
-    lda m_matrix-(('m' & $3f)*8),y
-:
+;;    cpx #'j'&$3f
+;    bne :+
+;    cmp #0
+;    beq :+
+;    bit bitmask
+;    bne :+
+;    eor #%00001010
+;:
+    ;cpx #'k'&$3f
+    ;bcc :+
+    ;cpx #'k'&$2f+1
+    ;bcs :+
+    ;lda k_matrix-(('k' & $3f)*8),y
+;:
+    ;cpx #'m'&$3f
+    ;bcc :+
+    ;cpx #'o'&$3f
+    ;bcs :+
+    ;lda m_matrix-(('m' & $3f)*8),y
+;:
     ;lsr
 
     ldy #0
     ldx #7
-    axs #0 ;puts lower 4 bits of a into x
+    axs #0 ;puts lower 3 bits of a into x
     cpx #4;if bit 3 is set, then also set bits 4-7
     bcc :+
     ldy #$fe
-    axs #$08 ;set upper 4 bits
+    axs #<($100-$f8) ;set upper 4 bits
 :
     stx lo
-    and #$e0
+    and #$f0
+    asl
     bit bitmask
     beq :+
     iny
@@ -93,26 +94,72 @@ gensprite:
 :
     sta hi+1
     pla
-    and #%00011000
-    tay
+    and #%00001000
+    beq :+
+
+    lda lo
+    ora #%11010000
+    sta lo
+    lda #$0f
+    ;sta hi
+    ;and #%00011000
+    ;;asl lo
+    ;rol
+    ;asl lo
+    ;rol
+    ;asl lo
+    ;rol
+;    cmp #%00001000
+;    bne :+
+;    lda #%00001111
+;:   cmp #%00010000
+;    bne :+
+;    lda #%11110000
+;:   cmp #%00011000
+;    bne :+
+;    lda #%11111111
+
+:   ;lda #0
+    sta hi
+
+    asl lo
+    rol hi
+    asl lo
+    rol hi
+    asl lo
+    rol hi
+    asl lo
+    rol hi
+
+    ;cmp #%00001000
+    ;tay
     ;tya
-    ;;cmp #$01
-    ;bne :+
-    ;ldy #$f0
-;:   ;cmp #$fe
+    cpy #$01
+    bne :+
+    ldy #%00000111
+:   cpy #$fe
+    bne :+
+    ldy #%11100000
+:   cpy #$ff
+    bne :+
+    ldy #%11100111
+:   ;sty hi
+    ;ora hi
+    ;sta hi
+    ;cmp #$fe
     ;bne :+
     ;ldy #$0f
 ;:
-    ldx charnum
-    cpx #'i'&$3f
-    bne :+
-    lda hi+1
-    cmp #%00011111
-    bne :+
-    ldy #%00011000
-:
+;    ldx charnum
+;;    cpx #'i'&$3f
+;    bne :+
+;    lda hi+1
+;    cmp #%00011111
+;    bne :+
+;    ldy #%00011000
+;:
 
-    sty hi
+    ;sty hi
 
     lda ByteOfCharMatrixIdx
     and #7
@@ -177,7 +224,8 @@ bitmask:
 bitmask2:
     .byte $30
 reptable:
-    .byte 0,0,4,0,4,0,0,0
+    ;.byte 1,1,1,1,1,1,1,1
+    .byte 0,0,1,0,4,0,0,0
 charnum:
     .byte 36
 i_matrix:
