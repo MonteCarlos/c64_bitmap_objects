@@ -49,7 +49,7 @@ gensprite:
     ldx charnum
 
     lda (ptr1),y ;fetch byte from char matrix
-
+    pha
     ;cpx #('1' )
     ;beq correct
     ;cpx #('j' & $3f)
@@ -77,29 +77,32 @@ gensprite:
     ;lsr
 
     ldy #0
-    ldx #15
+    ldx #7
     axs #0 ;puts lower 4 bits of a into x
-    cpx #8 ;if bit 3 is set, then also set bits 4-7
+    cpx #4;if bit 3 is set, then also set bits 4-7
     bcc :+
     ldy #$fe
-    axs #$10 ;set upper 4 bits
+    axs #$08 ;set upper 4 bits
 :
     stx lo
-    and #$f0
+    and #$e0
     bit bitmask
     beq :+
     iny
-    ora #$0f
+    ora #$1f
 :
     sta hi+1
-    tya
-    cmp #$01
-    bne :+
-    ldy #$f0
-:   cmp #$fe
-    bne :+
-    ldy #$0f
-:
+    pla
+    and #%00011000
+    tay
+    ;tya
+    ;;cmp #$01
+    ;bne :+
+    ;ldy #$f0
+;:   ;cmp #$fe
+    ;bne :+
+    ;ldy #$0f
+;:
     ldx charnum
     cpx #'i'&$3f
     bne :+
@@ -170,7 +173,7 @@ fillrest:
 finished:
     rts
 bitmask:
-    .byte $10
+    .byte $20
 bitmask2:
     .byte $30
 reptable:
