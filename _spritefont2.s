@@ -19,10 +19,7 @@ ByteOfSpriteMatrixIdx = 3
     lsr $01
 
     lax #0
-    ;sax ptr1
     sax ptr2
-    ;lda #>(charset+(spriteCount-1)*8)
-    ;sta ptr1+1
     lda #>(sprites+(spriteCount-1)*64)
     sta ptr2+1
 
@@ -35,7 +32,6 @@ gensprite0:
 
 gensprite:
     ldy ByteOfCharMatrixIdx
-    ;lda ptr1+1
     lda src+1
     cmp #>(charset+'9'*8)
     bcc :+
@@ -43,12 +39,10 @@ gensprite:
     bcs :+
     ldy #<(charset+('z'*8))+7
     sty ByteOfCharMatrixIdx
-    ;dec ptr1+1
     dec src+1
 :
 src = *+1
     lda 256*>(charset+(spriteCount-1)*8), y
-    ;lda (ptr1),y ;fetch byte from char matrix
     pha
 
     ldx #7
@@ -118,12 +112,13 @@ setsprite:
 
     lda #$cf
     dcp src+1
-    bcs finished
-
+    bcc notfinished
+    rts
+notfinished:
     lda #0
 :   dec ByteOfCharMatrixIdx
     and #7
-    jne gensprite
+    bne gensprite
 
     tya
     and #$3f
@@ -135,15 +130,14 @@ fillrest:
     dex
     bpl fillrest
     dey
+    sty ByteOfSpriteMatrixIdx
 
     cpy #$fe
     bne :+
     dec ptr2+1
 :
-    sty ByteOfSpriteMatrixIdx
-    jne gensprite
-finished:
-    rts
+    jmp gensprite
+
 bitmask:
     .byte $20
 reptable:
