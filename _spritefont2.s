@@ -100,6 +100,10 @@ gensprite:
     lda lo
     ora #%11010000
     sta lo
+    lda hi+1
+    ora #%00001011
+    sta hi+1
+
     lda #$0f
     ;sta hi
     ;and #%00011000
@@ -225,7 +229,7 @@ bitmask2:
     .byte $30
 reptable:
     ;.byte 1,1,1,1,1,1,1,1
-    .byte 0,0,1,0,4,0,0,0
+    .byte 0,1,2,2,2,1,0,0
 charnum:
     .byte 36
 i_matrix:
