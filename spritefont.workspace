@@ -2,5 +2,6 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="Spritefont_Workspace">
 		<Project filename="spritefont.cbp" />
+		<Project filename="charsegmenter.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
