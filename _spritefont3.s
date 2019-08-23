@@ -44,75 +44,46 @@ gensprite:
 :
 src = *+1
     lda 256*>(charset+(spriteCount-1)*8), y
-    cpx #'i'&$3f
-    beq isit
-    cpx #'t'&$3f
-    beq isit
-    cpx #'l'&$3f
-    beq isj
-
-    cpx #26+1+1
-    beq isit
-
-    cpx #'j'&$3f
-    beq isj
-    bne :+
-isit:
-    ;and #%00011111
+    ;sta tmp1
+    ;sre tmp1
+    ;asl
+    ;ora tmp1
+    ;slo tmp1
+    ldx #15
+    axs #0
+    ldy expandlo,x
+    sty lo
+    ldy expandhi,x
+    sty hi
     lsr
-isj:
     lsr
-:
-    pha
-
-    ldx #7
-    axs #0 ;puts lower 3 bits of a into x
-    cpx #4;if bit 3 is set, then also set bits 4-7
-    bcc :+
-    axs #<($100-$f8) ;set upper 4 bits
-:
-    ;a still preserved here
-    and #$f0
-    asl
-    bit bitmask
-    beq :+
-    ora #$1f
-:
-    tay
-    pla
-    and #%00001000
-    beq :+
-
-    txa
-    ora #%11010000
+    lsr
+    lsr
     tax
-    tya
-    ora #%00001011
-    tay
-
-    lda #$0f
-:   stx lo
-    sty hi+1
-
-    asl lo
-    rol
-    asl lo
-    rol
-    asl lo
-    rol
-    asl lo
-    rol
+    lda expandlo,x
+    asl
+    rol hi+1
+    asl
+    rol hi+1
+    asl
+    rol hi+1
+    asl
+    rol hi+1
+    ora hi
     sta hi
+    lda expandhi,x
 
-    lda ByteOfCharMatrixIdx
-    and #7
-    tay
-    ldx reptable,y
+    ;ldx ByteOfCharMatrixIdx
+    ;ldx #20
+    ;and #7
+    ;tay
+    ;ldx reptable,y
 setsprite0:
     ldy ByteOfSpriteMatrixIdx
 setsprite:
 
     lda lo
+    ;da raster,x
     sta (ptr2),y
     dey
     lda hi
@@ -121,10 +92,10 @@ setsprite:
     lda hi+1
     sta (ptr2),y
     dey
-
-    dex
-    bpl setsprite
-
+    ;dex
+    ;dex
+    ;bpl setsprite
+    ;dey
     sty ByteOfSpriteMatrixIdx
 
     lda ByteOfCharMatrixIdx
@@ -141,24 +112,17 @@ notfinished:
     jne gensprite
 
     tya
-    and #$3f
-    tax
-    lda #0
-fillrest:
-    sta (ptr2),y
-    dey
-    dex
-    bpl fillrest
-    dey
-    sty ByteOfSpriteMatrixIdx
+    sec
+    sbc #64-8*3
+    sta ByteOfSpriteMatrixIdx
 
-    cpy #$fe
-    bne :+
+    ;cpy #$fe
+    bcs :+
     dec ptr2+1
 :
     dec charnum
-    jmp gensprite
-
+    jpl gensprite
+    rts
 bitmask:
     .byte $20
 reptable:
@@ -170,7 +134,7 @@ charnum:
 
 .SEGMENT "SETTINGS"
 .export multicol = *
-    .byte   $00
+    .byte   $ff
 
 .export bgcol = *
     .byte   $06
@@ -179,40 +143,79 @@ charnum:
     .byte   $0f
 
 .export sprmcol1 = *
-    .byte   $01
+    .byte   $0c
 
 .export sprmcol2 = *
-    .byte   $0d
+    .byte   $0b
 
 raster:
-    .byte %11111111
-    .byte %11111111
-
-    .byte %10101010
+    .byte %11111111 ;green
     .byte %11111111
 
+    .byte %11101110 ;dither
+    .byte %11111111 ;dither2
+
+    .byte %10111011 ;rose
+    .byte %11101110 ;green
+
+    .byte %10101010 ;rose
     .byte %10111011
-    .byte %11101110
 
-    .byte %11111111
-    .byte %10101010
+    .byte %10101010 ;rose
+    .byte %10101010 ;rose
 
-    .byte %11111111
-    .byte %10101010
+    .byte %10011001 ;rose
+    .byte %10101010 ;dither 1
 
-    .byte %10101010
-    .byte %10101010
+    .byte %01100110 ;dither 2
+    .byte %10011001 ;grey
 
-    .byte %01010101
-    .byte %10101010
+    .byte %01010101 ;rose
+    .byte %01100110 ;grey
 
-    .byte %01100110
-    .byte %10011001
+    .byte %01010101 ;grey
+    .byte %01010101 ;grey
 
-    .byte %10101010
-    .byte %01010101
+    .byte %01010101 ;grey
+    .byte %01010101 ;grey
+    .byte %01010101 ;grey
+expandhi:
+   ;         33  22    11  00
+    .byte %00000000  ;%00000000
+    .byte %00000000  ;%00000001
+    .byte %00000000 ;%00000010
+    .byte %00000000  ;%00000011
 
-    .byte %01010101
-    .byte %01010101
+    .byte %00000110  ;%00000100
+    .byte %00000110  ;%00000101
+    .byte %00000110  ;%00000110
+    .byte %00000110  ;%00000111
 
-    .byte %01010101
+    .byte %01100100  ;%00001000
+    .byte %01100100 ;%00001001
+    .byte %01100100 ;%00001010
+    .byte %01100110  ;%00001011
+
+    .byte %01101010 ;%00001100
+    .byte %01101010  ;%00001101
+    .byte %01101010  ;%00001110
+    .byte %01101010  ;%00001111
+
+    expandlo:
+.byte  %00000000
+.byte %00000110
+.byte %01100100
+.byte %01101010
+.byte %01000000
+.byte %01000110
+.byte %10100100
+.byte %10101010
+
+.byte %00000000
+.byte %00000110
+.byte %01100100
+.byte %01101010
+.byte %01000000
+.byte %01000110
+.byte %10100100
+.byte %10101010

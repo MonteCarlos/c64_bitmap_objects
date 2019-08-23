@@ -60,7 +60,7 @@
         lda     #$35
         sta     $01
 mainloop:
-        lda     #$2f
+        lda     #$2f; 2f
         sta     ycoord
         lda     #$80
         sta     spridx
@@ -94,7 +94,7 @@ mainloop:
         adc     #8
         sta     spridx
         lda     ycoord
-        adc     #25
+        adc     #25 ;25
         sta     ycoord
         cmp     #$2f+8*25
         bcc     yloop
