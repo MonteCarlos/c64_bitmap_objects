@@ -42,8 +42,13 @@ gensprite:
     sty ByteOfCharMatrixIdx
     dec src+1
 :
+    lda #0
+    sta hi+1
+
 src = *+1
     lda 256*>(charset+(spriteCount-1)*8), y
+    lsr
+    and #%00111111
     ;sta tmp1
     ;sre tmp1
     ;asl
@@ -61,17 +66,18 @@ src = *+1
     lsr
     tax
     lda expandlo,x
-    asl
-    rol hi+1
-    asl
-    rol hi+1
-    asl
-    rol hi+1
-    asl
-    rol hi+1
-    ora hi
-    sta hi
-    lda expandhi,x
+    sta hi+1
+    ;asl
+    ;rol hi+1
+    ;;asl
+    ;rol hi+1
+    ;asl
+    ;rol hi+1
+    ;asl
+    ;rol hi+1
+    ;ora hi
+    ;sta hi
+    ;lda expandhi,x
 
     ;ldx ByteOfCharMatrixIdx
     ;ldx #20
