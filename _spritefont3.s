@@ -54,19 +54,21 @@ src = *+1
     ;asl
     ;ora tmp1
     ;slo tmp1
-    ldx #15
+    ldx #3
     axs #0
-    ldy expandlo,x
+    ldy expandtbl,x
     sty lo
-    ldy expandhi,x
+    lsr
+    lsr
+    ldx #3
+    axs #0
+    ldy expandtbl,x
     sty hi
     lsr
     lsr
-    lsr
-    lsr
     tax
-    lda expandlo,x
-    sta hi+1
+    ldy expandtbl,x
+    sty hi+1
     ;asl
     ;rol hi+1
     ;;asl
@@ -84,6 +86,7 @@ src = *+1
     ;and #7
     ;tay
     ;ldx reptable,y
+    ldx #2
 setsprite0:
     ldy ByteOfSpriteMatrixIdx
 setsprite:
@@ -98,6 +101,8 @@ setsprite:
     lda hi+1
     sta (ptr2),y
     dey
+    dex
+    bpl setsprite
     ;dex
     ;dex
     ;bpl setsprite
@@ -119,7 +124,7 @@ notfinished:
 
     tya
     sec
-    sbc #64-8*3
+    sbc #4;64-8*3
     sta ByteOfSpriteMatrixIdx
 
     ;cpy #$fe
@@ -207,7 +212,12 @@ expandhi:
     .byte %01101010  ;%00001110
     .byte %01101010  ;%00001111
 
-    expandlo:
+    expandtbl:
+    .byte %00000000
+    .byte %00001111
+    .byte %11110000
+    .byte %11111111
+
 .byte  %00000000
 .byte %00000110
 .byte %01100100
