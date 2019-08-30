@@ -38,7 +38,7 @@ gensprite:
     bcc :+
     cpy #<(charset+'0'*8)
     bcs :+
-    ldy #<(charset+('z'*8))+7
+    ldy #<(charset+('z'*8))+6
     sty ByteOfCharMatrixIdx
     dec src+1
 :
@@ -86,23 +86,30 @@ src = *+1
     ;and #7
     ;tay
     ;ldx reptable,y
-    ldx #2
+    lda #2
+    sta tmp1
+    ldx lineindex
 setsprite0:
     ldy ByteOfSpriteMatrixIdx
 setsprite:
 
     lda lo
     ;da raster,x
+    and raster,x
     sta (ptr2),y
     dey
     lda hi
+    and raster,x
     sta (ptr2),y
     dey
     lda hi+1
+    and raster,x
     sta (ptr2),y
-    dey
     dex
+    dey
+    dec tmp1
     bpl setsprite
+    stx lineindex
     ;dex
     ;dex
     ;bpl setsprite
@@ -139,6 +146,8 @@ notfinished:
     ;sec
     ;sbc #4;64-8*3
     sty ByteOfSpriteMatrixIdx
+    lda #19
+    sta lineindex
 
     cpy #$fe
     bne :+
@@ -161,17 +170,20 @@ charnum:
     .byte   $ff
 
 .export bgcol = *
-    .byte   $06
+    .byte   $00
 
 .export sprcol = *
-    .byte   $0f
+    .byte   $05
 
 .export sprmcol1 = *
-    .byte   $0c
+    .byte   $0a
 
 .export sprmcol2 = *
-    .byte   $0b
+    .byte   $0e
 
+.DATA
+lineindex:
+    .byte 19
 raster:
     .byte %11111111 ;green
     .byte %11111111
