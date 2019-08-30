@@ -24,7 +24,7 @@ ByteOfSpriteMatrixIdx = 3
     sta ptr2+1
 
 gensprite0:
-    lda #<(charset+'9'*8)+7; (spriteCount-1)
+    lda #<(charset+'9'*8)+6; (spriteCount-1)
     sta ByteOfCharMatrixIdx
 
     lda #<(sprites+(spriteCount-1)*64)+62
@@ -121,14 +121,27 @@ notfinished:
 :   dec ByteOfCharMatrixIdx
     and #7
     jne gensprite
+    dec ByteOfCharMatrixIdx
 
-    tya
-    sec
-    sbc #4;64-8*3
-    sta ByteOfSpriteMatrixIdx
+    ;lda #0
+    ;sta (ptr2),y
+    ;;dey
+    ;sta (ptr2),y
+    ;dey
+    ;sta (ptr2),y
+    ;dey
+    ;sta (ptr2),y
+    ;dey
+    ;tya
+    ;sec
+        ;sbc #64-21*3
+    dey
+    ;sec
+    ;sbc #4;64-8*3
+    sty ByteOfSpriteMatrixIdx
 
-    ;cpy #$fe
-    bcs :+
+    cpy #$fe
+    bne :+
     dec ptr2+1
 :
     dec charnum
