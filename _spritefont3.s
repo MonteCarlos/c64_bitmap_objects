@@ -94,8 +94,14 @@ setsprite0:
 setsprite:
 
     lda lo
+    asl
+    asl
+    eor lo
+    ;sta tmp2
+    ;lda lo
     ;da raster,x
-    and raster,x
+    ;and raster,x
+    ;ora tmp2
     sta (ptr2),y
     dey
     lda hi
