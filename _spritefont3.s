@@ -9,14 +9,18 @@ sprites = $2000
 .export _generatefont
 .export generatefont = _generatefont
 .import _loBitsTable, _hiBitsTable
+.import fillGarbage
 
 lo = tmp2
 hi = tmp3
+tmp = ptr3
 
 ByteOfCharMatrixIdx = 2
 ByteOfSpriteMatrixIdx = 3
 
     lsr $01
+
+    jsr fillGarbage
 
     lax #0
     sax ptr2
@@ -92,16 +96,9 @@ src = *+1
 setsprite0:
     ldy ByteOfSpriteMatrixIdx
 setsprite:
-
     lda lo
-    asl
-    asl
-    eor lo
-    ;sta tmp2
-    ;lda lo
-    ;da raster,x
-    ;and raster,x
-    ;ora tmp2
+    and raster,x
+    ora tmp
     sta (ptr2),y
     dey
     lda hi
@@ -243,6 +240,8 @@ expandhi:
     .byte %01101010  ;%00001110
     .byte %01101010  ;%00001111
 
+    bitcharset:
+    .byte %01111101, %10000111, %11111110, %110000011
     expandtbl:
     .byte %00000000
     .byte %00001111
