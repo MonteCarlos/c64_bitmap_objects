@@ -13,18 +13,13 @@ sprites = $2000
 
 lo = tmp2
 hi = tmp3
-mask = ptr3
 tmp5 = ptr3+1
 
-Charindex = 2
 ByteOfSpriteMatrixIdx = 3
 
     lsr $01
 
     jsr fillGarbage
-
-    lda #%00000100
-    sta mask
 
     lax #0
     sax ptr2
@@ -36,17 +31,8 @@ gensprite0:
     sta ByteOfSpriteMatrixIdx
 
 gensprite:
-    ldy Charindex
-    ldx charnum
-    lda ptr1+1
-    cmp #>(charset+'9'*8)
-    bcc :+
-    cpy #<(charset+'0'*8)
-    bcs :+
-    ldy #<(charset+('z'*8))+6
-    sty Charindex
-    dec ptr1+1
-:
+    ldy charnum
+
     ldx #3
     lda src1,y
     axs #0
@@ -84,65 +70,39 @@ setsprite0:
     ldy ByteOfSpriteMatrixIdx
 setsprite:
     lda lo
-    and raster,x
+    ;and raster,x
     sta (ptr2),y
     dey
     lda hi
-    and raster,x
+    ;and raster,x
     sta (ptr2),y
     dey
     lda hi+1
-    and raster,x
+    ;and raster,x
     sta (ptr2),y
     dex
     dey
     dec tmp1
     bpl setsprite
+
+    txa
+    bpl :+
+    dec charnum
+    bmi end
+    ldx #19
+    dey
+    tya
+    bpl :+
+    dec ptr2+1
+:   sty ByteOfSpriteMatrixIdx
     stx lineindex
-    ;dex
-    ;dex
-    ;bpl setsprite
-    ;dey
-    sty ByteOfSpriteMatrixIdx
 
     lsr bitmask
-    bcc gensprite
+    jcc gensprite
     lda #%00000100
     sta bitmask
-    dec charindex
-    bpl gensprite
-notfinished:
-    lda #0
-:   dec Charindex
-    and #7
-    jne gensprite
-    dec Charindex
-
-    ;lda #0
-    ;sta (ptr2),y
-    ;;dey
-    ;sta (ptr2),y
-    ;dey
-    ;sta (ptr2),y
-    ;dey
-    ;sta (ptr2),y
-    ;dey
-    ;tya
-    ;sec
-        ;sbc #64-21*3
-    dey
-    ;sec
-    ;sbc #4;64-8*3
-    sty ByteOfSpriteMatrixIdx
-    lda #19
-    sta lineindex
-
-    cpy #$fe
-    bne :+
-    dec ptr2+1
-:
-    dec charnum
     jpl gensprite
+end:
     rts
 bitmask:
     .byte %00000100
@@ -168,7 +128,7 @@ reptable:
     .byte   $0e
 
 .DATA
-charindex:
+charnum:
     .byte 36/4
 lineindex:
     .byte 19
