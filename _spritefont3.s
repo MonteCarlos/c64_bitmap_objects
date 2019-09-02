@@ -1,6 +1,16 @@
 .include "cc65runtime.sh"
 .include "myMacros.sh"
 
+; calculation 6x5 font:
+; 30 bits per char, organized as 6 bits a row in pairs of two bits.
+; 37 chars
+; -> 1110 pixels in total -> 139 Bytes -> left appr. 120 bytes
+; 3 tables, à 47 bytes approx (141 bytes).
+; table 1 containing cols 5&4 as bitpairs,
+; table 2 containing cols 3&2 as bitpairs,
+; table 4 containing cols 1&0 as bitpairs
+
+; currently: 138 byte code!
 spriteCount = 37
 charset = $d000
 sprites = $2000
@@ -8,12 +18,10 @@ sprites = $2000
 .proc _generatefont
 .export _generatefont
 .export generatefont = _generatefont
-.import _loBitsTable, _hiBitsTable
 .import fillGarbage
 
 lo = tmp2
 hi = tmp3
-tmp5 = ptr3+1
 
 ByteOfSpriteMatrixIdx = 3
 
@@ -23,11 +31,10 @@ ByteOfSpriteMatrixIdx = 3
 
     lax #0
     sax ptr2
-    sax ptr1
     lda #>(sprites+(spriteCount-1)*64)
     sta ptr2+1
 gensprite0:
-    lda #<(sprites+(spriteCount-1)*64)+62
+    lda #<(sprites+(spriteCount-1)*64)+5*4*3-1
     sta ByteOfSpriteMatrixIdx
 
 gensprite:
@@ -87,12 +94,13 @@ setsprite:
 
     txa
     bpl :+
-    dec charnum
-    bmi end
     ldx #19
     dey
-    tya
-    bpl :+
+    dey
+    dey
+    dey
+    cpy #$fc
+    bcc :+
     dec ptr2+1
 :   sty ByteOfSpriteMatrixIdx
     stx lineindex
@@ -101,6 +109,7 @@ setsprite:
     jcc gensprite
     lda #%00000100
     sta bitmask
+    dec charnum
     jpl gensprite
 end:
     rts
@@ -129,7 +138,7 @@ reptable:
 
 .DATA
 charnum:
-    .byte 36/4
+    .byte 10
 lineindex:
     .byte 19
 raster:
