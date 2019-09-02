@@ -47,6 +47,7 @@
 			<Add option="-t none" />
 			<Add directory="../" />
 		</Linker>
+		<Unit filename="6x4charset.txt" />
 		<Unit filename="_spritefont.lst">
 			<Option target="Release" />
 			<Option target="sprfont_wth_viewer" />
@@ -66,6 +67,7 @@
 			<Option target="sprfont_wth_viewer2" />
 		</Unit>
 		<Unit filename="_spritefont3.s" />
+		<Unit filename="garbageFiller.s" />
 		<Unit filename="spritefont.c">
 			<Option compilerVar="CC" />
 			<Option target="Release" />

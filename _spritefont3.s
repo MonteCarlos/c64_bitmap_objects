@@ -13,83 +13,70 @@ sprites = $2000
 
 lo = tmp2
 hi = tmp3
-tmp = ptr3
+mask = ptr3
+tmp5 = ptr3+1
 
-ByteOfCharMatrixIdx = 2
+Charindex = 2
 ByteOfSpriteMatrixIdx = 3
 
     lsr $01
 
     jsr fillGarbage
 
+    lda #%00000100
+    sta mask
+
     lax #0
     sax ptr2
+    sax ptr1
     lda #>(sprites+(spriteCount-1)*64)
     sta ptr2+1
-
 gensprite0:
-    lda #<(charset+'9'*8)+6; (spriteCount-1)
-    sta ByteOfCharMatrixIdx
-
     lda #<(sprites+(spriteCount-1)*64)+62
     sta ByteOfSpriteMatrixIdx
 
 gensprite:
-    ldy ByteOfCharMatrixIdx
+    ldy Charindex
     ldx charnum
-    lda src+1
+    lda ptr1+1
     cmp #>(charset+'9'*8)
     bcc :+
     cpy #<(charset+'0'*8)
     bcs :+
     ldy #<(charset+('z'*8))+6
-    sty ByteOfCharMatrixIdx
-    dec src+1
+    sty Charindex
+    dec ptr1+1
 :
-    lda #0
+    ldx #3
+    lda src1,y
+    axs #0
+    lsr
+    lsr
+    sta src1,y
+
+    lda expandtbl,x
+    sta lo
+
+    ldx #3
+    lda src2,y
+    axs #0
+    lsr
+    lsr
+    sta src2,y
+
+    lda expandtbl,x
+    sta hi
+
+    ldx #3
+    lda src3,y
+    axs #0
+    lsr
+    lsr
+    sta src3,y
+
+    lda expandtbl,x
     sta hi+1
 
-src = *+1
-    lda 256*>(charset+(spriteCount-1)*8), y
-    lsr
-    and #%00111111
-    ;sta tmp1
-    ;sre tmp1
-    ;asl
-    ;ora tmp1
-    ;slo tmp1
-    ldx #3
-    axs #0
-    ldy expandtbl,x
-    sty lo
-    lsr
-    lsr
-    ldx #3
-    axs #0
-    ldy expandtbl,x
-    sty hi
-    lsr
-    lsr
-    tax
-    ldy expandtbl,x
-    sty hi+1
-    ;asl
-    ;rol hi+1
-    ;;asl
-    ;rol hi+1
-    ;asl
-    ;rol hi+1
-    ;asl
-    ;rol hi+1
-    ;ora hi
-    ;sta hi
-    ;lda expandhi,x
-
-    ;ldx ByteOfCharMatrixIdx
-    ;ldx #20
-    ;and #7
-    ;tay
-    ;ldx reptable,y
     lda #2
     sta tmp1
     ldx lineindex
@@ -98,7 +85,6 @@ setsprite0:
 setsprite:
     lda lo
     and raster,x
-    ora tmp
     sta (ptr2),y
     dey
     lda hi
@@ -119,19 +105,18 @@ setsprite:
     ;dey
     sty ByteOfSpriteMatrixIdx
 
-    lda ByteOfCharMatrixIdx
-    bne :+
-
-    lda #$cf
-    dcp src+1
-    bcc notfinished
-    rts
+    lsr bitmask
+    bcc gensprite
+    lda #%00000100
+    sta bitmask
+    dec charindex
+    bpl gensprite
 notfinished:
     lda #0
-:   dec ByteOfCharMatrixIdx
+:   dec Charindex
     and #7
     jne gensprite
-    dec ByteOfCharMatrixIdx
+    dec Charindex
 
     ;lda #0
     ;sta (ptr2),y
@@ -160,11 +145,9 @@ notfinished:
     jpl gensprite
     rts
 bitmask:
-    .byte $20
+    .byte %00000100
 reptable:
     .byte 0,1,2,2,2,1,0,0
-charnum:
-    .byte 36
 
 .endproc
 
@@ -185,6 +168,8 @@ charnum:
     .byte   $0e
 
 .DATA
+charindex:
+    .byte 36/4
 lineindex:
     .byte 19
 raster:
@@ -240,8 +225,13 @@ expandhi:
     .byte %01101010  ;%00001110
     .byte %01101010  ;%00001111
 
-    bitcharset:
-    .byte %01111101, %10000111, %11111110, %110000011
+    src1:
+    .byte %01111101, %10000111, %11111110, %11000001, %10000000
+    src2:
+    .byte %01111101, %10000111, %11111110, %11000001, %10000000
+    src3:
+    .byte %01111101, %10000111, %11111110, %11000001, %10000000
+
     expandtbl:
     .byte %00000000
     .byte %00001111
