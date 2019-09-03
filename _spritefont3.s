@@ -31,6 +31,7 @@ totalbitcnt = bitsperchar*spriteCount
 
 lo = tmp2
 hi = tmp3
+;hi+1 = tmp3+1 pseudo code!
 
 ByteOfSpriteMatrixIdx = 3
 
@@ -47,7 +48,7 @@ gensprite0:
     sta ByteOfSpriteMatrixIdx
 
 gensprite:
-    ldy charnum
+    ldy bitTblIndex
 
     ldx #3
     lda src1,y
@@ -82,7 +83,6 @@ gensprite:
     lda #3
     sta tmp1
     ldx lineindex
-setsprite0:
     ldy ByteOfSpriteMatrixIdx
 setsprite:
     lda lo
@@ -96,8 +96,8 @@ setsprite:
     lda hi+1
     ;and raster,x
     sta (ptr2),y
-    dex
     dey
+    dex
     dec tmp1
     bpl setsprite
 
@@ -116,17 +116,13 @@ setsprite:
 
     lsr bitmask
     jcc gensprite
-    lda #%00000100
+    lda #%00001000
     sta bitmask
     dec bitTblIndex
     jpl gensprite
-end:
     rts
 bitmask:
-    .byte %00000100
-reptable:
-    .byte 0,1,2,2,2,1,0,0
-
+    .byte %00001000
 .endproc
 
 .SEGMENT "SETTINGS"
@@ -147,7 +143,7 @@ reptable:
 
 .DATA
 bitTblIndex:
-    .byte 46
+    .byte 1
 lineindex:
     .byte 19
 raster:
