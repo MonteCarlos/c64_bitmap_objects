@@ -108,7 +108,7 @@ setsprite:
     dey     ;because we use only 20 lines of the sprites
     dey
     dey
-    cpy #$fc
+    cpy #$fb
     bcc :+
     dec ptr2+1
 :   sty ByteOfSpriteMatrixIdx
