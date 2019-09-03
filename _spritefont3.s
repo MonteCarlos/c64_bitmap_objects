@@ -6,14 +6,23 @@
 ; 37 chars
 ; -> 1110 pixels in total -> 139 Bytes -> left appr. 120 bytes
 ; 3 tables, à 47 bytes approx (141 bytes).
-; table 1 containing cols 5&4 as bitpairs,
-; table 2 containing cols 3&2 as bitpairs,
-; table 4 containing cols 1&0 as bitpairs
+; table 1+0 containing cols 5&4 as bitpairs,
+; table 1+1 containing cols 3&2 as bitpairs,
+; table 1+2 containing cols 1&0 as bitpairs
 
 ; currently: 138 byte code!
+;          column
+; line 1   5&4      3&2     1&0
+; line 2
+
 spriteCount = 37
 charset = $d000
 sprites = $2000
+linecnt = 20
+xwidth = 6
+ywidth = 5
+bitsperchar = xwidth*ywidth
+totalbitcnt = bitsperchar*spriteCount
 
 .proc _generatefont
 .export _generatefont
@@ -70,7 +79,7 @@ gensprite:
     lda expandtbl,x
     sta hi+1
 
-    lda #2
+    lda #3
     sta tmp1
     ldx lineindex
 setsprite0:
@@ -94,9 +103,9 @@ setsprite:
 
     txa
     bpl :+
-    ldx #19
-    dey
-    dey
+    ldx #19 ;reset value for lineindex
+    dey     ;adjust spr ptr so that line 21 is skipped
+    dey     ;because we use only 20 lines of the sprites
     dey
     dey
     cpy #$fc
@@ -109,7 +118,7 @@ setsprite:
     jcc gensprite
     lda #%00000100
     sta bitmask
-    dec charnum
+    dec bitTblIndex
     jpl gensprite
 end:
     rts
@@ -137,8 +146,8 @@ reptable:
     .byte   $0e
 
 .DATA
-charnum:
-    .byte 10
+bitTblIndex:
+    .byte 46
 lineindex:
     .byte 19
 raster:
@@ -172,55 +181,18 @@ raster:
     .byte %01010101 ;grey
     .byte %01010101 ;grey
     .byte %01010101 ;grey
-expandhi:
-   ;         33  22    11  00
-    .byte %00000000  ;%00000000
-    .byte %00000000  ;%00000001
-    .byte %00000000 ;%00000010
-    .byte %00000000  ;%00000011
 
-    .byte %00000110  ;%00000100
-    .byte %00000110  ;%00000101
-    .byte %00000110  ;%00000110
-    .byte %00000110  ;%00000111
-
-    .byte %01100100  ;%00001000
-    .byte %01100100 ;%00001001
-    .byte %01100100 ;%00001010
-    .byte %01100110  ;%00001011
-
-    .byte %01101010 ;%00001100
-    .byte %01101010  ;%00001101
-    .byte %01101010  ;%00001110
-    .byte %01101010  ;%00001111
-
-    src1:
+src1:
     .byte %01111101, %10000111, %11111110, %11000001, %10000000
-    src2:
+    .res 47-(*-src1)
+src2:
     .byte %01111101, %10000111, %11111110, %11000001, %10000000
-    src3:
+    .res 47-(*-src2)
+src3:
     .byte %01111101, %10000111, %11111110, %11000001, %10000000
-
-    expandtbl:
+    .res 47-(*-src3)
+expandtbl:
     .byte %00000000
     .byte %00001111
     .byte %11110000
     .byte %11111111
-
-.byte  %00000000
-.byte %00000110
-.byte %01100100
-.byte %01101010
-.byte %01000000
-.byte %01000110
-.byte %10100100
-.byte %10101010
-
-.byte %00000000
-.byte %00000110
-.byte %01100100
-.byte %01101010
-.byte %01000000
-.byte %01000110
-.byte %10100100
-.byte %10101010
