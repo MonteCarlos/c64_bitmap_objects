@@ -1,4 +1,5 @@
-.export fillGarbage = *
+.export fillGarbage
+.proc fillGarbage
     ldy #$0f
 fill1:
     ldx #0
@@ -16,4 +17,5 @@ dest = *+1
     dey
     bpl fill1
     rts
-
+.endproc
+; 24 bytes

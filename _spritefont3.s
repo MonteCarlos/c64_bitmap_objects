@@ -1,6 +1,8 @@
 .include "cc65runtime.sh"
 .include "myMacros.sh"
 
+.autoimport off
+
 ; calculation 6x5 font:
 ; 30 bits per char, organized as 6 bits a row in pairs of two bits.
 ; 37 chars
@@ -50,34 +52,13 @@ gensprite0:
 gensprite:
     ldy bitTblIndex
 
-    ldx #3
-    lda src1,y
-    axs #0
-    lsr
-    lsr
-    sta src1,y
-
-    lda expandtbl,x
+    jsr get
     sta lo
-
-    ldx #3
-    lda src2,y
-    axs #0
-    lsr
-    lsr
-    sta src2,y
-
-    lda expandtbl,x
+    dey
+    jsr get
     sta hi
-
-    ldx #3
-    lda src3,y
-    axs #0
-    lsr
-    lsr
-    sta src3,y
-
-    lda expandtbl,x
+    dey
+    jsr get
     sta hi+1
 
     lda #3
@@ -97,32 +78,45 @@ setsprite:
     ;and raster,x
     sta (ptr2),y
     dey
+    cpy #$ff
+    bne :+
+    dec ptr2+1
+:
     dex
-    dec tmp1
-    bpl setsprite
-
-    txa
     bpl :+
     ldx #19 ;reset value for lineindex
     dey     ;adjust spr ptr so that line 21 is skipped
     dey     ;because we use only 20 lines of the sprites
     dey
     dey
-    cpy #$fb
-    bcc :+
-    dec ptr2+1
-:   sty ByteOfSpriteMatrixIdx
+:
+    dec tmp1
+    bpl setsprite
+
+    sty ByteOfSpriteMatrixIdx
     stx lineindex
 
-    lsr bitmask
-    jcc gensprite
-    lda #%00001000
-    sta bitmask
-    dec bitTblIndex
+    dec bitpos
     jpl gensprite
+    lda #3
+    sta bitpos
+    lax bitTblIndex
+    axs #3
+    stx bitTblIndex
+    jcs gensprite
     rts
-bitmask:
-    .byte %00001000
+get:
+    ldx #3
+    lda src1,y
+    axs #0
+    lsr
+    lsr
+    sta src1,y
+
+    lda expandtbl,x
+    rts
+bitpos:
+    .byte 3
 .endproc
 
 .SEGMENT "SETTINGS"
@@ -143,7 +137,7 @@ bitmask:
 
 .DATA
 bitTblIndex:
-    .byte 46
+    .byte 47*3-1
 lineindex:
     .byte 19
 raster:
