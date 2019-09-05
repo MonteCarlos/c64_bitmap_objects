@@ -46,7 +46,7 @@ ByteOfSpriteMatrixIdx = 3
     lda #>(sprites+(spriteCount-1)*64)
     sta ptr2+1
 gensprite0:
-    lda #<(sprites+(spriteCount-1)*64)+5*4*3-1
+    lda #<(sprites+(spriteCount-1)*64)+62
     sta ByteOfSpriteMatrixIdx
 
 gensprite:
@@ -61,9 +61,13 @@ gensprite:
     jsr get
     sta hi+1
 
-    lda #3
-    sta tmp1
+    ldy #3
     ldx lineindex
+    cpx #20
+    bne :+
+    iny
+:
+    sty tmp1
     ldy ByteOfSpriteMatrixIdx
 setsprite:
     lda lo
@@ -84,10 +88,9 @@ setsprite:
 :
     dex
     bpl :+
-    ldx #19 ;reset value for lineindex
-    dey     ;adjust spr ptr so that line 21 is skipped
-    dey     ;because we use only 20 lines of the sprites
-    dey
+    ldx #20 ;reset value for lineindex
+    ;adjust spr ptr so that line 21 is skipped
+    ;because we use only 20 lines of the sprites
     dey
 :
     dec tmp1
@@ -139,38 +142,38 @@ bitpos:
 bitTblIndex:
     .byte 47*3-1
 lineindex:
-    .byte 19
-raster:
-    .byte %11111111 ;green
-    .byte %11111111
+    .byte 20
+;raster:
+;    .byte %11111111 ;green
+;    .byte %11111111
 
-    .byte %11101110 ;dither
-    .byte %11111111 ;dither2
+;    .byte %11101110 ;dither
+;    .byte %11111111 ;dither2
 
-    .byte %10111011 ;rose
-    .byte %11101110 ;green
+;    .byte %10111011 ;rose
+;    .byte %11101110 ;green
 
-    .byte %10101010 ;rose
-    .byte %10111011
+;    .byte %10101010 ;rose
+;    .byte %10111011
 
-    .byte %10101010 ;rose
-    .byte %10101010 ;rose
+;    .byte %10101010 ;rose
+;    .byte %10101010 ;rose
 
-    .byte %10011001 ;rose
-    .byte %10101010 ;dither 1
+;    .byte %10011001 ;rose
+;    .byte %10101010 ;dither 1
 
-    .byte %01100110 ;dither 2
-    .byte %10011001 ;grey
+;    .byte %01100110 ;dither 2
+;    .byte %10011001 ;grey
 
-    .byte %01010101 ;rose
-    .byte %01100110 ;grey
+;    .byte %01010101 ;rose
+;    .byte %01100110 ;grey
 
-    .byte %01010101 ;grey
-    .byte %01010101 ;grey
+;    .byte %01010101 ;grey
+;    .byte %01010101 ;grey
 
-    .byte %01010101 ;grey
-    .byte %01010101 ;grey
-    .byte %01010101 ;grey
+;    .byte %01010101 ;grey
+;    .byte %01010101 ;grey
+;    .byte %01010101 ;grey
 
 src1:
     .byte %01111101, %10000111, %11111110, %11000001, %10000000
