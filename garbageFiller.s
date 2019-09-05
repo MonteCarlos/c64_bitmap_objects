@@ -1,3 +1,4 @@
+
 .export fillGarbage
 .proc fillGarbage
     ldy #$0f

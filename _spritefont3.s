@@ -39,7 +39,7 @@ ByteOfSpriteMatrixIdx = 3
 
     lsr $01
 
-    jsr fillGarbage
+    ;jsr fillGarbage
 
     lax #0
     sax ptr2
@@ -50,16 +50,27 @@ gensprite0:
     sta ByteOfSpriteMatrixIdx
 
 gensprite:
-    ldy bitTblIndex
-
-    jsr get
-    sta lo
+    ldx bitTblIndex
+    ldy #2
+getn:
+    lda #0          ;2
+    lsr src1,x      ;5
+    bcc :+          ;7
+    ora #%00001111  ;9
+:   lsr src1,x      ;12
+    bcc :+          ;14
+    ora #%11110000  ;16
+:   sta lo,y
+    dex
     dey
-    jsr get
-    sta hi
-    dey
-    jsr get
-    sta hi+1
+    bpl getn
+    ;sta lo
+    ;dey
+    ;jsr get
+    ;sta hi
+    ;dey
+    ;jsr get
+    ;sta hi+1
 
     ldy #3
     ldx lineindex
@@ -70,7 +81,7 @@ gensprite:
     sty tmp1
     ldy ByteOfSpriteMatrixIdx
 setsprite:
-    lda lo
+    lda hi+1
     ;and raster,x
     sta (ptr2),y
     dey
@@ -78,7 +89,7 @@ setsprite:
     ;and raster,x
     sta (ptr2),y
     dey
-    lda hi+1
+    lda lo
     ;and raster,x
     sta (ptr2),y
     dey
@@ -107,16 +118,6 @@ setsprite:
     axs #3
     stx bitTblIndex
     jcs gensprite
-    rts
-get:
-    ldx #3
-    lda src1,y
-    axs #0
-    lsr
-    lsr
-    sta src1,y
-
-    lda expandtbl,x
     rts
 bitpos:
     .byte 3
@@ -184,8 +185,3 @@ src2:
 src3:
     .byte %01111101, %10000111, %11111110, %11000001, %10000000
     .res 47-(*-src3), %11110000
-expandtbl:
-    .byte %00000000
-    .byte %00001111
-    .byte %11110000
-    .byte %11111111
