@@ -1,4 +1,6 @@
 
+.ifdef FILL
+
 .export fillGarbage
 .proc fillGarbage
     ldy #$0f
@@ -20,3 +22,5 @@ dest = *+1
     rts
 .endproc
 ; 24 bytes
+
+.endif

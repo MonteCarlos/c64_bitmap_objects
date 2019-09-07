@@ -17,15 +17,16 @@
 ; line 1   5&4      3&2     1&0
 ; line 2
 
-spriteCount = 37
+; with 6x7 font, 26 letters: 26*42bits = 1092 bits = 137 Bytes
+spriteCount = 26
 charset = $d000
 sprites = $2000
 linecnt = 20
 xwidth = 6
-ywidth = 5
-bitsperchar = xwidth*ywidth
-totalbitcnt = bitsperchar*spriteCount
-
+ywidth = 7
+bitsperchar = xwidth*ywidth ;42
+totalbitcnt = bitsperchar*spriteCount ;1092
+totalbytecount = (totalbitcnt+4)/8 ; add 4 for proper rounding -> 137
 .proc _generatefont
 .export _generatefont
 .export generatefont = _generatefont
@@ -35,23 +36,21 @@ lo = tmp2
 hi = tmp3
 ;hi+1 = tmp3+1 pseudo code!
 
-ByteOfSpriteMatrixIdx = 3
-
-    lsr $01
-
-    ;jsr fillGarbage
+    .ifdef FILL
+    jsr fillGarbage
+    .endif
 
     lax #0
     sax ptr2
     lda #>(sprites+(spriteCount-1)*64)
     sta ptr2+1
 gensprite0:
-    lda #<(sprites+(spriteCount-1)*64)+62
-    sta ByteOfSpriteMatrixIdx
 
+bitTblIndex = *+1
+    ldx #totalbytecount-1
 gensprite:
-    ldx bitTblIndex
     ldy #2
+    sty tmp1
 getn:
     lda #0          ;2
     lsr src1,x      ;5
@@ -64,51 +63,42 @@ getn:
     dex
     dey
     bpl getn
-    ;sta lo
-    ;dey
-    ;jsr get
-    ;sta hi
-    ;dey
-    ;jsr get
-    ;sta hi+1
 
-    ldy #3
-    ldx lineindex
-    cpx #20
-    bne :+
-    iny
-:
-    sty tmp1
-    ldy ByteOfSpriteMatrixIdx
+lineindex = *+1
+    ldx #20
+ByteOfSpriteMatrixIdx = *+1
+    ldy #<(sprites+(spriteCount-1)*64)+62
 setsprite:
-    lda hi+1
-    ;and raster,x
+    lda raster,x
+    sta andvalue
+    txa
+    pha
+
+    ldx #2
+ssprite:
+    lda lo,x
+andvalue = *+1
+    and #$ff
     sta (ptr2),y
     dey
-    lda hi
-    ;and raster,x
-    sta (ptr2),y
-    dey
-    lda lo
-    ;and raster,x
-    sta (ptr2),y
-    dey
-    cpy #$ff
     bne :+
     dec ptr2+1
-:
+:   dex
+    bpl ssprite
+
+    pla
+    tax
     dex
     bpl :+
     ldx #20 ;reset value for lineindex
-    ;adjust spr ptr so that line 21 is skipped
-    ;because we use only 20 lines of the sprites
+    ;adjust spr ptr so that byte 63 of sprite is skipped
     dey
 :
     dec tmp1
     bpl setsprite
 
-    sty ByteOfSpriteMatrixIdx
     stx lineindex
+    sty ByteOfSpriteMatrixIdx
 
     dec bitpos
     jpl gensprite
@@ -140,48 +130,38 @@ bitpos:
     .byte   $0e
 
 .DATA
-bitTblIndex:
-    .byte 47*3-1
-lineindex:
-    .byte 20
-;raster:
-;    .byte %11111111 ;green
-;    .byte %11111111
+raster:
+    .byte %11111111 ;green
+    .byte %11111111
 
-;    .byte %11101110 ;dither
-;    .byte %11111111 ;dither2
+    .byte %11101110 ;dither
+    .byte %11111111 ;dither2
 
-;    .byte %10111011 ;rose
-;    .byte %11101110 ;green
+    .byte %10111011 ;rose
+    .byte %11101110 ;green
 
-;    .byte %10101010 ;rose
-;    .byte %10111011
+    .byte %10101010 ;rose
+    .byte %10111011
 
-;    .byte %10101010 ;rose
-;    .byte %10101010 ;rose
+    .byte %10101010 ;rose
+    .byte %10101010 ;rose
 
-;    .byte %10011001 ;rose
-;    .byte %10101010 ;dither 1
+    .byte %10011001 ;rose
+    .byte %10101010 ;dither 1
 
-;    .byte %01100110 ;dither 2
-;    .byte %10011001 ;grey
+    .byte %01100110 ;dither 2
+    .byte %10011001 ;grey
 
-;    .byte %01010101 ;rose
-;    .byte %01100110 ;grey
+    .byte %01010101 ;rose
+    .byte %01100110 ;grey
 
-;    .byte %01010101 ;grey
-;    .byte %01010101 ;grey
+    .byte %01010101 ;grey
+    .byte %01010101 ;grey
 
-;    .byte %01010101 ;grey
-;    .byte %01010101 ;grey
-;    .byte %01010101 ;grey
+    .byte %01010101 ;grey
+    .byte %01010101 ;grey
+    .byte %01010101 ;grey
 
 src1:
     .byte %01111101, %10000111, %11111110, %11000001, %10000000
-    .res 47-(*-src1), %10101010
-src2:
-    .byte %01111101, %10000111, %11111110, %11000001, %10000000
-    .res 47-(*-src2), %11001100
-src3:
-    .byte %01111101, %10000111, %11111110, %11000001, %10000000
-    .res 47-(*-src3), %11110000
+    .res 137-(*-src1), %10111011

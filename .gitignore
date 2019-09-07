@@ -1,0 +1,16 @@
+*.prg
+*.lbl
+*.map
+*.lst
+*.bmarks
+*.depend
+*.layout
+*.i
+*.err
+*.run
+*.lol
+*.log
+out.src
+bin/
+obj/
+.objs/
