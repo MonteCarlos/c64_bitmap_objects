@@ -99,7 +99,19 @@ class VIC2_Charset {
     VIC2_Charblock chars[256];
 public:
     VIC2_Charblock &operator[](int index){return chars[index];}
+    bool fread (ifstream *file);
 };
+
+bool VIC2_Charset::fread (ifstream *file){
+    for (int i = 0; i < 256; ++i){
+        chars[i].fread(file);
+        if (file->fail()){
+            break;
+            return true;
+        }
+    }
+    return false;
+}
 
 /*********************************************************/
 /*Class for defining operations on a c64 bitmap                  */
@@ -171,10 +183,8 @@ bool VIC2_Bitmap::fread (ifstream *file) {
 
 int main (void) {
     VIC2_Charset srccharset;
-    VIC2_Bitmap bitmap (0);
-    VIC2_Charblock tmpCharblock;
-    int x, y, z;
-    char temp;
+    uint8_t destarray[totalbytecount] = { 0 };
+    uint8_t *dest = destarray+totalbytecount-3;
     uint8_t bits;
 
     ofstream wfile;
@@ -185,135 +195,39 @@ int main (void) {
     try {
         cout << "Reading File chargen" << endl;
         ifstream rfile ("chargen", ios::binary);
-        //rfile.read (&temp, 1);
-        //rfile.read (&temp, 1);
-        //Overread startaddress
-
-        bitmap.fread (&rfile, 27 * 8);
-        rfile.seekg (21 * 8, rfile.cur);
-        bitmap.fread (&rfile, 10 * 8);
+        srccharset.fread (&rfile);
         rfile.close();
     }
     catch (...) {
-        cout << "Error reading bitmap!" << endl;
+        cout << "Error reading charset!" << endl;
         return 1;
     }
 
-    try {
-        cout << "Linking startup code" << endl;
-        ifstream rfile ("viewbitmap.prg", ios::binary);
-        wfile.open ("chargen_c64.run", ios::binary);
-
-        while (rfile.read (&temp, 1) ) {
-            wfile.write (&temp, 1);
-        }
-
-        rfile.close();
-    }
-    catch (...) {
-        cout << "Error copying startup code!";
-        return 1;
-    }
-
-    z = 0;
+    int bitCnt = 0;
 
     for (int ch = 'z' - 'a'; ch >= 0; --ch) {
         for (int row = 6; row >= 0; --row) {
             for (int t = 2; t >= 0; --t) {
-                bits = srccharset[ch].lsr2(row);
-                rotRight (dest + t, bits);
+                bits = srccharset[ch+1].lsr2(row);
+                *(dest + t) >>= 2;
+                *(dest + t) |= (bits << 6);
             }
 
             ++bitCnt;
 
             if ( 4 == bitCnt) {
                 dest -= 3;
+                bitCnt = 0;
             }
         }
     }
 
-    for (x = 0; x < 40; ++x) {
-        for (y = 0; y <= z; ++y) {
-            tmpCharblock.expandquarter (bitmap.getcharblock (x, 0), 0);
-
-            if (bitmap.getcharblock (y, 2) == tmpCharblock) {
-                break;
-            }
-        }
-
-        if (y > z) {
-            bitmap.getcharblock (z, 2) = tmpCharblock;
-            ++z;
-        }
-    }
-
-    z = 0;
-
-    for (x = 0; x < 40; ++x) {
-        for (y = 0; y <= z; ++y) {
-            tmpCharblock.expandquarter (bitmap.getcharblock (x, 0), 1);
-
-            if (bitmap.getcharblock (y, 3) == tmpCharblock) {
-                break;
-            }
-        }
-
-        if (y > z) {
-            bitmap.getcharblock (z, 3) = tmpCharblock;
-            ++z;
-        }
-    }
-
-    z = 0;
-
-    for (x = 0; x < 40; ++x) {
-        for (y = 0; y <= z; ++y) {
-            tmpCharblock.expandquarter (bitmap.getcharblock (x, 0), 2);
-
-            if (bitmap.getcharblock (y, 4) == tmpCharblock) {
-                break;
-            }
-        }
-
-        if (y > z) {
-            bitmap.getcharblock (z, 4) = tmpCharblock;
-            ++z;
-        }
-    }
-
-    z = 0;
-
-    for (x = 0; x < 40; ++x) {
-        for (y = 0; y <= z; ++y) {
-            tmpCharblock.expandquarter (bitmap.getcharblock (x, 0), 3);
-
-            if (bitmap.getcharblock (y, 5) == tmpCharblock) {
-                break;
-            }
-        }
-
-        if (y > z) {
-            bitmap.getcharblock (z, 5) = tmpCharblock;
-            ++z;
-        }
-    }
-
-    if ( !bitmap.fwrite (&wfile) ) {
-        cout << "Fehler beim Schreiben der Datei " << "bitmap_c64.run";
+    wfile.open("bitstream", ios::binary);
+    cout << "Writing output file !" << endl;
+    if ( !wfile.write((const char*)dest, totalbytecount) ) {
+        cout << "Fehler beim Schreiben der Datei " << "bitstream" << endl;
         return 1;
     }
 
     wfile.close();
-
-    try {
-        cout << "Writing binary file" << endl;
-        wfile.open ("chargen_c64.prg", ios::binary);
-        wfile.put (0);
-        wfile.put (0x20);
-        bitmap.fwrite (&wfile);
-        wfile.close();
-    }
-    catch (...) {
-        cout << "Error writing binary!" << endl;
-    }
 }
