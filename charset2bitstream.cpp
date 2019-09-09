@@ -87,29 +87,38 @@ class VIC2_Charblock: public VIC2_CharblockBase {
 public:
     using VIC2_CharblockBase::VIC2_CharblockBase;
 
-    uint8_t lsr2(int row)
-    {
-        uint8_t bits = Rows[row]&3;
+    uint8_t lsr2 (int row) {
+        uint8_t bits = Rows[row] & 3;
         Rows[row] >>= 2;
         return bits;
+    }
+
+    uint8_t lsr1 (int row) {
+        uint8_t bit = Rows[row] & 1;
+        Rows[row] >>= 1;
+        return bit;
     }
 };
 
 class VIC2_Charset {
     VIC2_Charblock chars[256];
 public:
-    VIC2_Charblock &operator[](int index){return chars[index];}
+    VIC2_Charblock &operator[] (int index) {
+        return chars[index];
+    }
     bool fread (ifstream *file);
 };
 
-bool VIC2_Charset::fread (ifstream *file){
-    for (int i = 0; i < 256; ++i){
-        chars[i].fread(file);
-        if (file->fail()){
+bool VIC2_Charset::fread (ifstream *file) {
+    for (int i = 0; i < 256; ++i) {
+        chars[i].fread (file);
+
+        if (file->fail() ) {
             break;
             return true;
         }
     }
+
     return false;
 }
 
@@ -184,7 +193,7 @@ bool VIC2_Bitmap::fread (ifstream *file) {
 int main (void) {
     VIC2_Charset srccharset;
     uint8_t destarray[totalbytecount] = { 0 };
-    uint8_t *dest = destarray+totalbytecount-3;
+    uint8_t *dest = destarray + totalbytecount - 3;
     uint8_t bits;
 
     ofstream wfile;
@@ -207,27 +216,59 @@ int main (void) {
 
     for (int ch = 'z' - 'a'; ch >= 0; --ch) {
         for (int row = 6; row >= 0; --row) {
+            srccharset[ch + 1].lsr1 (row);
+
             for (int t = 2; t >= 0; --t) {
-                bits = srccharset[ch+1].lsr2(row);
-                *(dest + t) >>= 2;
-                *(dest + t) |= (bits << 6);
+                bits = srccharset[ch + 1].lsr2 (row);
+                * (dest + t) >>= 2;
+                * (dest + t) |= (bits << 6);
             }
 
-            ++bitCnt;
+            ++ bitCnt;
 
-            if ( 4 == bitCnt) {
+            if (bitCnt >= 4) {
                 dest -= 3;
                 bitCnt = 0;
             }
         }
     }
 
-    wfile.open("bitstream", ios::binary);
+    wfile.open ("bitstream", ios::binary);
     cout << "Writing output file !" << endl;
-    if ( !wfile.write((const char*)dest, totalbytecount) ) {
+
+    if ( !wfile.write ( (const char *) destarray, totalbytecount) ) {
         cout << "Fehler beim Schreiben der Datei " << "bitstream" << endl;
         return 1;
     }
 
     wfile.close();
+
+    char pattern[7] = {0};
+    dest = destarray + totalbytecount - 3;
+    bitCnt = 0;
+
+    for (int ch = 3; ch >= 0; --ch) {
+        for (int row = 6; row >= 0; --row) {
+            pattern[4] = *(dest+2) & 2 ? '*' : ' ';
+            pattern[5] = *(dest+2) & 1 ? '*' : ' ';
+            pattern[2] = *(dest+1) & 2 ? '*' : ' ';
+            pattern[3] = *(dest+1) & 1 ? '*' : ' ';
+            pattern[0] = *(dest) & 2 ? '*' : ' ';
+            pattern[1] = *(dest) & 1 ? '*' : ' ';
+
+            *dest >>= 2;
+            *(dest+1) >>= 2;
+            *(dest+2) >>= 2;
+
+            ++ bitCnt;
+
+            if (bitCnt >= 4) {
+                dest -= 3;
+                bitCnt = 0;
+            }
+            puts(pattern);
+        }
+        putchar('\n');
+    }
+
 }
