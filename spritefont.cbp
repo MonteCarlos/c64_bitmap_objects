@@ -84,8 +84,12 @@
 			<Option target="sprfont_wth_viewer" />
 			<Option target="sprfont_wth_viewer2" />
 		</Unit>
+		<Unit filename="spritefont_wth_viewer3.map" />
 		<Unit filename="tables.c">
 			<Option compilerVar="CC" />
+			<Option target="Release" />
+			<Option target="sprfont_wth_viewer" />
+			<Option target="sprfont_wth_viewer2" />
 		</Unit>
 		<Unit filename="viewer.s">
 			<Option target="sprfont_wth_viewer" />

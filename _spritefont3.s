@@ -69,11 +69,13 @@ lineindex = *+1
 ByteOfSpriteMatrixIdx = *+1
     ldy #<(sprites+(spriteCount-1)*64)+62
 setsprite:
+    ; set one line of a sprite
     lda raster,x
     sta andvalue
     txa
     pha
 
+    ; set each byte of a line of a sprite
     ldx #2
 ssprite:
     lda lo,x
@@ -81,6 +83,7 @@ andvalue = *+1
     and #$ff
     sta (ptr2),y
     dey
+    cpy #$ff
     bne :+
     dec ptr2+1
 :   dex
@@ -100,13 +103,13 @@ andvalue = *+1
     stx lineindex
     sty ByteOfSpriteMatrixIdx
 
+    lax bitTblIndex
     dec bitpos
     jpl gensprite
-    lda #3
-    sta bitpos
-    lax bitTblIndex
     axs #3
     stx bitTblIndex
+    lda #3
+    sta bitpos
     jcs gensprite
     rts
 bitpos:
