@@ -40,6 +40,18 @@
 					<Add option="-C spritefont.cfg" />
 				</Linker>
 			</Target>
+			<Target title="sprfont_wth_viewer3_fill">
+				<Option output="spritefont_wth_viewer3_fill.prg" prefix_auto="0" extension_auto="0" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="cc65" />
+				<Compiler>
+					<Add option="-DFILL" />
+				</Compiler>
+				<Linker>
+					<Add option="-C spritefont.cfg" />
+				</Linker>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add directory="../include" />
@@ -95,6 +107,7 @@
 			<Option target="sprfont_wth_viewer" />
 			<Option target="sprfont_wth_viewer2" />
 			<Option target="sprfont_wth_viewer3" />
+			<Option target="sprfont_wth_viewer3_fill" />
 		</Unit>
 		<Unit filename="viewer_startup.c">
 			<Option compilerVar="CC" />
