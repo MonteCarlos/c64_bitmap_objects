@@ -193,6 +193,7 @@ bool VIC2_Bitmap::fread (ifstream *file) {
 int main (void) {
     VIC2_Charset srccharset;
     uint8_t destarray[totalbytecount] = { 0 };
+    uint8_t padding[] = {0, 0, 0};
     uint8_t *dest = destarray + totalbytecount - 3;
     uint8_t bits;
 
@@ -236,7 +237,14 @@ int main (void) {
     wfile.open ("bitstream", ios::binary);
     cout << "Writing output file !" << endl;
 
-    if ( !wfile.write ( (const char *) destarray, totalbytecount) ) {
+    /*if (0 != totalbytecount % 3) {
+        if ( !wfile.write ( (char *) padding, 3 - (totalbytecount % 3) ) ) {
+            cout << "Fehler beim Schreiben der Datei " << "bitstream" << endl;
+            return 1;
+        }
+    }*/
+
+    if ( !wfile.write ( (char *) destarray, totalbytecount) ) {
         cout << "Fehler beim Schreiben der Datei " << "bitstream" << endl;
         return 1;
     }
@@ -247,18 +255,18 @@ int main (void) {
     dest = destarray + totalbytecount - 3;
     bitCnt = 0;
 
-    for (int ch = 3; ch >= 0; --ch) {
+    for (int ch = 25; ch >= 0; --ch) {
         for (int row = 6; row >= 0; --row) {
-            pattern[4] = *(dest+2) & 2 ? '*' : ' ';
-            pattern[5] = *(dest+2) & 1 ? '*' : ' ';
-            pattern[2] = *(dest+1) & 2 ? '*' : ' ';
-            pattern[3] = *(dest+1) & 1 ? '*' : ' ';
-            pattern[0] = *(dest) & 2 ? '*' : ' ';
-            pattern[1] = *(dest) & 1 ? '*' : ' ';
+            pattern[4] = * (dest + 2) & 2 ? '*' : ' ';
+            pattern[5] = * (dest + 2) & 1 ? '*' : ' ';
+            pattern[2] = * (dest + 1) & 2 ? '*' : ' ';
+            pattern[3] = * (dest + 1) & 1 ? '*' : ' ';
+            pattern[0] = * (dest) & 2 ? '*' : ' ';
+            pattern[1] = * (dest) & 1 ? '*' : ' ';
 
             *dest >>= 2;
-            *(dest+1) >>= 2;
-            *(dest+2) >>= 2;
+            * (dest + 1) >>= 2;
+            * (dest + 2) >>= 2;
 
             ++ bitCnt;
 
@@ -266,9 +274,11 @@ int main (void) {
                 dest -= 3;
                 bitCnt = 0;
             }
-            puts(pattern);
+
+            puts (pattern);
         }
-        putchar('\n');
+
+        putchar ('\n');
     }
 
 }

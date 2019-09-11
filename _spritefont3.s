@@ -44,19 +44,17 @@ hi = tmp3
     sax ptr2
     lda #>(sprites+(spriteCount-1)*64)
     sta ptr2+1
-gensprite0:
-
 bitTblIndex = *+1
-    ldx #totalbytecount-1
+    ldx #srclength-1
 gensprite:
     ldy #2
     sty tmp1
 getn:
     lda #0          ;2
-    lsr src1,x      ;5
+    lsr src,x      ;5
     bcc :+          ;7
     ora #%00001111  ;9
-:   lsr src1,x      ;12
+:   lsr src,x      ;12
     bcc :+          ;14
     ora #%11110000  ;16
 :   sta lo,y
@@ -165,5 +163,7 @@ raster:
     .byte %01010101 ;grey
     .byte %01010101 ;grey
 
-src1:
+src:
+    .byte 0,0
     .incbin "bitstream"
+srclength = *-src
