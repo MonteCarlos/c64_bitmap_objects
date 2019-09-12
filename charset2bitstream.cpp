@@ -234,6 +234,14 @@ int main (void) {
         }
     }
 
+    for (; bitCnt >=0; --bitCnt) {
+        for (int t = 2; t >= 0; --t) {
+            bits = srccharset[1].lsr2 (0);
+            * (dest + t) >>= 2;
+            * (dest + t) |= (bits << 6);
+        }
+    }
+
     wfile.open ("bitstream", ios::binary);
     cout << "Writing output file !" << endl;
 
