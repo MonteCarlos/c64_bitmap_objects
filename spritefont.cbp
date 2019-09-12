@@ -46,7 +46,7 @@
 				<Option type="1" />
 				<Option compiler="cc65" />
 				<Compiler>
-					<Add option="-DFILL" />
+					<Add option="-Wa -DFILL" />
 				</Compiler>
 				<Linker>
 					<Add option="-C spritefont.cfg" />

@@ -80,11 +80,11 @@ ssprite:
 andvalue = *+1
     and #$ff
     sta (ptr2),y
-    dey
-    cpy #$ff
+    tya
     bne :+
     dec ptr2+1
-:   dex
+:   dey
+    dex
     bpl ssprite
 
     pla
@@ -164,6 +164,6 @@ raster:
     .byte %01010101 ;grey
 
 src:
-    .byte 0,0
+    .byte 0
     .incbin "bitstream"
 srclength = *-src
