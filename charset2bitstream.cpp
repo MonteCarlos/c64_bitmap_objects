@@ -216,7 +216,9 @@ int main (void) {
     int bitCnt = 0;
 
     for (int ch = 'z' - 'a'; ch >= 0; --ch) {
+        printf("Converting Char %d\n", ch);
         for (int row = 6; row >= 0; --row) {
+            printf("  %d, %d # ", row, bitCnt);
             srccharset[ch + 1].lsr1 (row);
 
             for (int t = 2; t >= 0; --t) {
@@ -232,14 +234,17 @@ int main (void) {
                 bitCnt = 0;
             }
         }
+        printf("\n");
     }
 
-    for (; bitCnt >=0; --bitCnt) {
-        for (int t = 2; t >= 0; --t) {
-            bits = srccharset[1].lsr2 (0);
-            * (dest + t) >>= 2;
-            * (dest + t) |= (bits << 6);
-        }
+    for (; bitCnt >= 0; --bitCnt) {
+        //for (int row = 6; row >= 0; --row) {
+            for (int t = 2; t >= 0; --t) {
+                bits = srccharset[1].lsr2 (0);
+                * (dest + t) >>= 2;
+                * (dest + t) |= (bits << 6);
+            }
+        //}
     }
 
     wfile.open ("bitstream", ios::binary);
