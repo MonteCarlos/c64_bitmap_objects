@@ -15,7 +15,7 @@ const int xwidth = 6;
 const int ywidth = 7;
 const int bitsperchar = xwidth * ywidth; //42
 const int totalbitcnt = bitsperchar * spriteCount; //1092
-const int totalbytecount = (totalbitcnt + 4) / 8; //add 4 for proper rounding -> 137
+const int totalbytecount = 138;//(totalbitcnt + 4) / 8; //add 4 for proper rounding -> 137
 
 using namespace std;
 
@@ -237,7 +237,7 @@ int main (void) {
         printf("\n");
     }
 
-    for (; bitCnt >= 0; --bitCnt) {
+    for (; bitCnt < 4; ++bitCnt) {
         //for (int row = 6; row >= 0; --row) {
             for (int t = 2; t >= 0; --t) {
                 bits = srccharset[1].lsr2 (0);
