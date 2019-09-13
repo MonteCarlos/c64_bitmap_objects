@@ -40,8 +40,6 @@ hi = tmp3
     jsr fillGarbage
     .endif
 
-    lax #0
-    sax ptr2
     lda #>(sprites+(spriteCount-1)*64)
     sta ptr2+1
 bitTblIndex = *+1
@@ -51,6 +49,7 @@ gensprite:
     sty tmp1
 getn:
     lda #0          ;2
+    sta ptr2
     lsr src,x      ;5
     bcc :+          ;7
     ora #%00001111  ;9
