@@ -67,12 +67,13 @@ ByteOfSpriteMatrixIdx = *+1
     ldy #<(sprites+(spriteCount-1)*64)+62
 setsprite:
     ; set one line of a sprite
-    lda raster,x
-    sta andvalue
     txa
     pha
 
-    ; set each byte of a line of a sprite
+    lda raster,x
+    sta andvalue
+
+; set each byte of a line of a sprite
     ldx #2
 ssprite:
     lda lo,x
