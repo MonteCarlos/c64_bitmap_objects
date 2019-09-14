@@ -62,16 +62,18 @@ getn:
     bpl getn
 
 lineindex = *+1
-    ldx #20
-ByteOfSpriteMatrixIdx = *+1
-    ldy #<(sprites+(spriteCount-1)*64)+62
-setsprite:
-    ; set one line of a sprite
+    ldx #6;20
+    lda raster,x
+    ;pla
+    ;stx lo+2
+    sta andvalue
     txa
     pha
+ByteOfSpriteMatrixIdx = *+1
+    ldy #<(sprites+(spriteCount-1)*64)+62
 
-    lda raster,x
-    sta andvalue
+    ; set one line of a sprite
+setsprite:
 
 ; set each byte of a line of a sprite
     ldx #2
@@ -87,17 +89,17 @@ andvalue = *+1
     dex
     bpl ssprite
 
+    dec tmp1
+    bpl setsprite
+
     pla
     tax
     dex
     bpl :+
-    ldx #20 ;reset value for lineindex
+    ldx #6 ;reset value for lineindex
     ;adjust spr ptr so that byte 63 of sprite is skipped
     dey
 :
-    dec tmp1
-    bpl setsprite
-
     stx lineindex
     sty ByteOfSpriteMatrixIdx
 
@@ -122,16 +124,25 @@ bitpos:
     .byte   $00
 
 .export sprcol = *
-    .byte   $05
+    .byte   $0e
 
 .export sprmcol1 = *
-    .byte   $0a
+    .byte   $03
 
 .export sprmcol2 = *
-    .byte   $0e
+    .byte   $06
 
 .DATA
 raster:
+    .byte %11111111
+    .byte %11101110
+    .byte %10111011
+    .byte %10101010
+    .byte %10011001
+    .byte %01100110
+    .byte %01010101
+    .if 0
+
     .byte %11111111 ;green
     .byte %11111111
 
@@ -162,6 +173,7 @@ raster:
     .byte %01010101 ;grey
     .byte %01010101 ;grey
     .byte %01010101 ;grey
+.endif
 
 src:
     .byte 0
