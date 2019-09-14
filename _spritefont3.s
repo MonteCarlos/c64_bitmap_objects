@@ -121,16 +121,16 @@ bitpos:
     .byte   $ff
 
 .export bgcol = *
-    .byte   $00
+    .byte   $07
 
 .export sprcol = *
-    .byte   $0e
+    .byte   $0a
 
 .export sprmcol1 = *
-    .byte   $03
+    .byte   $0f
 
 .export sprmcol2 = *
-    .byte   $06
+    .byte   $04
 
 .DATA
 raster:

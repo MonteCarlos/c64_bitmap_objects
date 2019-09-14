@@ -204,7 +204,7 @@ int main (void) {
 
     try {
         cout << "Reading File chargen" << endl;
-        ifstream rfile ("chargen", ios::binary);
+        ifstream rfile ("6x7pixcharset.bin", ios::binary);
         srccharset.fread (&rfile);
         rfile.close();
     }
@@ -219,10 +219,10 @@ int main (void) {
         printf("Converting Char %d\n", ch);
         for (int row = 6; row >= 0; --row) {
             printf("  %d, %d # ", row, bitCnt);
-            srccharset[ch + 1].lsr1 (row);
+            //srccharset[ch + 1].lsr1 (row);
 
             for (int t = 2; t >= 0; --t) {
-                bits = srccharset[ch + 1].lsr2 (row);
+                bits = srccharset[ch].lsr2 (row);
                 * (dest + t) >>= 2;
                 * (dest + t) |= (bits << 6);
             }
@@ -240,7 +240,7 @@ int main (void) {
     for (; bitCnt < 4; ++bitCnt) {
         //for (int row = 6; row >= 0; --row) {
             for (int t = 2; t >= 0; --t) {
-                bits = srccharset[1].lsr2 (0);
+                bits = srccharset[0].lsr2 (0);
                 * (dest + t) >>= 2;
                 * (dest + t) |= (bits << 6);
             }
