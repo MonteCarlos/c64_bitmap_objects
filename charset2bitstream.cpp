@@ -262,13 +262,11 @@ int main (void) {
             mappedValues[dest[i]] = countOfUniqueValues;
             ++countOfUniqueValues;
         }
-        if (prevValue == histo[dest[i]]){
-        }
 
         ++histo[dest[i]];
     }
 
-    cout << "Unique value count: " << (int)countOfUniqueValues << endl;
+    cout << "Unique value count: " << dec << (int)countOfUniqueValues << endl;
     cout << "** Histogramme: " << endl;
 
     for ( int i = 255; i >= 0; --i ) {
