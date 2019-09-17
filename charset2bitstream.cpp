@@ -194,7 +194,7 @@ int main (void) {
     VIC2_Charset srccharset;
     uint8_t destarray[totalbytecount] = { 0 };
     uint8_t histo[256] = { 0 };
-    uint8_t mappedValues[totalbytecount] = { 0 };
+    uint8_t mappedValues[256] = { 0 };
     uint8_t countOfUniqueValues = 0;
     uint8_t *dest = destarray + totalbytecount - 3;
     uint8_t bits;
@@ -259,7 +259,7 @@ int main (void) {
     for ( int i = 0; i < totalbytecount; ++i ) {
         cout << hex << (int)dest[i] << ", ";
         if (0 == histo[dest[i]]){
-            mappedValues[i] = countOfUniqueValues;
+            mappedValues[dest[i]] = countOfUniqueValues;
             ++countOfUniqueValues;
         }
         if (prevValue == histo[dest[i]]){
@@ -281,7 +281,7 @@ int main (void) {
 
     cout << "Mapped values: " << endl;
     for ( int i = 0; i < totalbytecount; ++i ) {
-        cout << hex << setw(2) << (int)mappedValues[i] << " ";
+        cout << (int)mappedValues[dest[i]] << " ";
     }
     cout << endl;
 
