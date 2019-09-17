@@ -193,9 +193,12 @@ bool VIC2_Bitmap::fread (ifstream *file) {
 int main (void) {
     VIC2_Charset srccharset;
     uint8_t destarray[totalbytecount] = { 0 };
-    uint8_t padding[] = {0, 0, 0};
+    uint8_t histo[256] = { 0 };
+    uint8_t mappedValues[totalbytecount] = { 0 };
+    uint8_t countOfUniqueValues = 0;
     uint8_t *dest = destarray + totalbytecount - 3;
     uint8_t bits;
+    int prevValue = -1;
 
     ofstream wfile;
 
@@ -216,9 +219,10 @@ int main (void) {
     int bitCnt = 0;
 
     for (int ch = 'z' - 'a'; ch >= 0; --ch) {
-        printf("Converting Char %d\n", ch);
+        printf ("Converting Char %d\n", ch);
+
         for (int row = 6; row >= 0; --row) {
-            printf("  %d, %d # ", row, bitCnt);
+            printf ("  %d, %d # ", row, bitCnt);
             //srccharset[ch + 1].lsr1 (row);
 
             for (int t = 2; t >= 0; --t) {
@@ -234,21 +238,52 @@ int main (void) {
                 bitCnt = 0;
             }
         }
-        printf("\n");
+
+        printf ("\n");
     }
 
     for (; bitCnt < 4; ++bitCnt) {
         //for (int row = 6; row >= 0; --row) {
-            for (int t = 2; t >= 0; --t) {
-                bits = srccharset[0].lsr2 (0);
-                * (dest + t) >>= 2;
-                * (dest + t) |= (bits << 6);
-            }
+        for (int t = 2; t >= 0; --t) {
+            bits = srccharset[0].lsr2 (0);
+            * (dest + t) >>= 2;
+            * (dest + t) |= (bits << 6);
+        }
+
         //}
     }
 
     wfile.open ("bitstream", ios::binary);
     cout << "Writing output file !" << endl;
+
+    for ( int i = 0; i < totalbytecount; ++i ) {
+        cout << hex << (int)dest[i] << ", ";
+        if (0 == histo[dest[i]]){
+            mappedValues[i] = countOfUniqueValues;
+            ++countOfUniqueValues;
+        }
+        if (prevValue == histo[dest[i]]){
+        }
+
+        ++histo[dest[i]];
+    }
+
+    cout << "Unique value count: " << (int)countOfUniqueValues << endl;
+    cout << "** Histogramme: " << endl;
+
+    for ( int i = 255; i >= 0; --i ) {
+       if ( histo[i] ){
+            cout << hex << setw(2) << i << ": " << (int)histo[i] << endl;
+       }
+    }
+    cout << endl;
+
+
+    cout << "Mapped values: " << endl;
+    for ( int i = 0; i < totalbytecount; ++i ) {
+        cout << hex << setw(2) << (int)mappedValues[i] << " ";
+    }
+    cout << endl;
 
     /*if (0 != totalbytecount % 3) {
         if ( !wfile.write ( (char *) padding, 3 - (totalbytecount % 3) ) ) {
@@ -263,6 +298,8 @@ int main (void) {
     }
 
     wfile.close();
+
+    //exit(0);
 
     char pattern[7] = {0};
     dest = destarray + totalbytecount - 3;

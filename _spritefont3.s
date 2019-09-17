@@ -64,11 +64,7 @@ getn:
 lineindex = *+1
     ldx #6;20
     lda raster,x
-    ;pla
-    ;stx lo+2
     sta andvalue
-    txa
-    pha
 ByteOfSpriteMatrixIdx = *+1
     ldy #<(sprites+(spriteCount-1)*64)+62
 
@@ -92,8 +88,7 @@ andvalue = *+1
     dec tmp1
     bpl setsprite
 
-    pla
-    tax
+    ldx lineindex
     dex
     bpl :+
     ldx #6 ;reset value for lineindex
@@ -135,6 +130,9 @@ bitpos:
 .DATA
 raster:
     .byte %11111111
+    ;.byte %11111111
+    ;.byte %11111111
+    ;.byte %11111111
     .byte %11101110
     .byte %10111011
     .byte %10101010
