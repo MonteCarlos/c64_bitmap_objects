@@ -256,9 +256,18 @@ int main (void) {
     wfile.open ("bitstream", ios::binary);
     cout << "Writing output file !" << endl;
 
+    int col = 0;
+
     for ( int i = 0; i < totalbytecount; ++i ) {
-        cout << hex << (int)dest[i] << ", ";
-        if (0 == histo[dest[i]]){
+        cout << hex << setw (2) << (int) dest[i] << ", ";
+
+        if (!col) {
+            cout << endl;
+        }
+
+        col = (col + 1) % 6;
+
+        if (0 == histo[dest[i]]) {
             mappedValues[dest[i]] = countOfUniqueValues;
             ++countOfUniqueValues;
         }
@@ -266,22 +275,43 @@ int main (void) {
         ++histo[dest[i]];
     }
 
-    cout << "Unique value count: " << dec << (int)countOfUniqueValues << endl;
+    cout << "Unique value count: " << dec << (int) countOfUniqueValues << endl;
     cout << "** Histogramme: " << endl;
 
     for ( int i = 255; i >= 0; --i ) {
-       if ( histo[i] ){
-            cout << hex << setw(2) << i << ": " << (int)histo[i] << endl;
-       }
+        if ( histo[i] ) {
+            cout << hex << setw (2) << i << ": " << (int) histo[i] << endl;
+        }
     }
+
     cout << endl;
 
 
     cout << "Mapped values: " << endl;
+
     for ( int i = 0; i < totalbytecount; ++i ) {
-        cout << (int)mappedValues[dest[i]] << " ";
+        cout << (int) mappedValues[dest[i]] << " ";
     }
+
     cout << endl;
+
+    for ( int i = totalbytecount - 4; i >= 0; --i ) {
+        for (; bitCnt < 4; ++bitCnt) {
+            for (int t = 3; t >= 0; --t) {
+
+            bits = mappedValues[i+t]&(3<<t*2))<<(8-2*t);
+            * (dest2 + t) >>= 2;
+            * (dest2 + t) |= (bits << 6);
+            }
+        }
+
+        //}
+    }
+
+        if ( histo[i] ) {
+            cout << hex << setw (2) << i << ": " << (int) histo[i] << endl;
+        }
+    }
 
     /*if (0 != totalbytecount % 3) {
         if ( !wfile.write ( (char *) padding, 3 - (totalbytecount % 3) ) ) {

@@ -32,8 +32,10 @@ totalbytecount = (totalbitcnt+4)/8 ; add 4 for proper rounding -> 137
 .export generatefont = _generatefont
 .import fillGarbage
 
+tmp = ptr1
 lo = tmp2
 hi = tmp3
+bitpos = ptr3
 ;hi+1 = tmp3+1 pseudo code!
 
     .ifdef FILL
@@ -44,6 +46,9 @@ hi = tmp3
     sta ptr2+1
 bitTblIndex = *+1
     ldx #srclength-1
+gensprite0:
+    lda #3
+    sta bitpos
 gensprite:
     ldy #2
     sty tmp1
@@ -64,7 +69,8 @@ getn:
 lineindex = *+1
     ldx #6;20
     lda raster,x
-    sta andvalue
+    sta tmp
+    sta tmp+1
 ByteOfSpriteMatrixIdx = *+1
     ldy #<(sprites+(spriteCount-1)*64)+62
 
@@ -75,8 +81,7 @@ setsprite:
     ldx #2
 ssprite:
     lda lo,x
-andvalue = *+1
-    and #$ff
+    and tmp
     sta (ptr2),y
     tya
     bne :+
@@ -85,17 +90,21 @@ andvalue = *+1
     dex
     bpl ssprite
 
+    asl tmp+1
+    rol tmp
+    asl tmp+1
+    rol tmp
+
     dec tmp1
     bpl setsprite
 
-    ldx lineindex
-    dex
+    dec lineindex
     bpl :+
     ldx #6 ;reset value for lineindex
     ;adjust spr ptr so that byte 63 of sprite is skipped
     dey
-:
     stx lineindex
+:
     sty ByteOfSpriteMatrixIdx
 
     lax bitTblIndex
@@ -103,12 +112,8 @@ andvalue = *+1
     jpl gensprite
     axs #3
     stx bitTblIndex
-    lda #3
-    sta bitpos
-    jcs gensprite
+    jcs gensprite0
     rts
-bitpos:
-    .byte 3
 .endproc
 
 .SEGMENT "SETTINGS"
@@ -130,50 +135,13 @@ bitpos:
 .DATA
 raster:
     .byte %11111111
-    ;.byte %11111111
-    ;.byte %11111111
-    ;.byte %11111111
     .byte %11101110
-    .byte %10111011
     .byte %10101010
     .byte %10011001
-    .byte %01100110
     .byte %01010101
-    .if 0
-
-    .byte %11111111 ;green
-    .byte %11111111
-
-    .byte %11101110 ;dither
-    .byte %11111111 ;dither2
-
-    .byte %10111011 ;rose
-    .byte %11101110 ;green
-
-    .byte %10101010 ;rose
-    .byte %10111011
-
-    .byte %10101010 ;rose
-    .byte %10101010 ;rose
-
-    .byte %10011001 ;rose
-    .byte %10101010 ;dither 1
-
-    .byte %01100110 ;dither 2
-    .byte %10011001 ;grey
-
-    .byte %01010101 ;rose
-    .byte %01100110 ;grey
-
-    .byte %01010101 ;grey
-    .byte %01010101 ;grey
-
-    .byte %01010101 ;grey
-    .byte %01010101 ;grey
-    .byte %01010101 ;grey
-.endif
-
+    .byte %10011001
+    .byte %10101010
 src:
-    .byte 0
+    .byte 0 ;padding byte so that index into table starts at srclength-1 and ends at 0 in steps of 3
     .incbin "bitstream"
 srclength = *-src
