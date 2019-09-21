@@ -65,17 +65,17 @@ getn:
     dex
     dey
     bpl getn
-
-lineindex = *+1
-    ldx #6;20
-    lda raster,x
-    sta tmp
-    sta tmp+1
+    ;sta tmp+1
 ByteOfSpriteMatrixIdx = *+1
     ldy #<(sprites+(spriteCount-1)*64)+62
 
     ; set one line of a sprite
 setsprite:
+
+lineindex = *+1
+    ldx #20;20
+    lda raster,x
+    sta tmp
 
 ; set each byte of a line of a sprite
     ldx #2
@@ -90,21 +90,16 @@ ssprite:
     dex
     bpl ssprite
 
-    asl tmp+1
-    rol tmp
-    asl tmp+1
-    rol tmp
-
-    dec tmp1
-    bpl setsprite
-
     dec lineindex
     bpl :+
-    ldx #6 ;reset value for lineindex
+    ldx #20 ;reset value for lineindex
     ;adjust spr ptr so that byte 63 of sprite is skipped
     dey
     stx lineindex
 :
+    dec tmp1
+    bpl setsprite
+
     sty ByteOfSpriteMatrixIdx
 
     lax bitTblIndex
