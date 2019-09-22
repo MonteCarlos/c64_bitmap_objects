@@ -65,7 +65,7 @@ getn:
     dex
     dey
     bpl getn
-    ;sta tmp+1
+
 ByteOfSpriteMatrixIdx = *+1
     ldy #<(sprites+(spriteCount-1)*64)+62
 
@@ -73,8 +73,14 @@ ByteOfSpriteMatrixIdx = *+1
 setsprite:
 
 lineindex = *+1
-    ldx #20;20
-    lda raster,x
+    lda #20;20
+    sec
+    sbc #11
+    bcs :+
+    eor #$ff
+:   tax
+    inx
+    lda raster-1,x
     sta tmp
 
 ; set each byte of a line of a sprite
@@ -116,26 +122,34 @@ ssprite:
     .byte   $ff
 
 .export bgcol = *
-    .byte   $07
+    .byte   $03
 
 .export sprcol = *
-    .byte   $0a
+    .byte   $08
 
 .export sprmcol1 = *
-    .byte   $0f
+    .byte   $05
 
 .export sprmcol2 = *
-    .byte   $04
+    .byte   $09
 
 .DATA
 raster:
-    .byte %11111111
-    .byte %11101110
-    .byte %10101010
-    .byte %10011001
-    .byte %01010101
-    .byte %10011001
-    .byte %10101010
+    .byte %11111111 ;green
+    .byte %11111011
+
+    .byte %11101110 ;dither
+    .byte %10111011 ;rose
+
+    .byte %11101010 ;rose
+    .byte %10101010 ;rose
+
+    .byte %10100110 ;rose
+    .byte %10011001 ;rose
+    .byte %01100110 ;dither 1
+
+    .byte %10010101 ;dither 2
+;    .byte %01010101 ;grey
 src:
     .byte 0 ;padding byte so that index into table starts at srclength-1 and ends at 0 in steps of 3
     .incbin "bitstream"

@@ -33,6 +33,10 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="charset2bitstream.cpp" />
+		<Unit filename="vic2_bitmap_objects_internal.h" />
+		<Unit filename="vic2_charblock.h" />
+		<Unit filename="vic2_charblock_base.h" />
+		<Unit filename="vic2_charset.h" />
 		<Extensions>
 			<envvars />
 			<code_completion />
