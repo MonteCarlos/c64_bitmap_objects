@@ -4,6 +4,35 @@
 #include "vic2_charblock_base.h"
 #include "vic2_charblock.h"
 
+class VIC2_StorableBitmapBase {
+private:
+public:
+    VIC2_StorableBitmapBase(size_t N);
+
+    int fwrite (ofstream *file, void *data, size_t N);
+    int fwrite (ofstream &file, void *data, size_t N);
+
+    ifstream &openForReading(string &filename);
+    ofstream &openForWriting(string &filename);
+
+    bool fread (ifstream *file, size_t N);
+    bool fread (ifstream &file, size_t count);
+
+};
+
+int VIC2_StorableBitmapBase::fwrite (ofstream *file, void *data, size_t N) {
+    try{
+        file->write ( (const char *) data, N);
+    }
+
+    return file->error();
+}
+
+int VIC2_StorableBitmapBase::fwrite (ofstream &file, void *data, size_t N)  {
+    file.write ( (const char *) data, N);
+    return file.error();
+}
+
 /*********************************************************/
 /*Class for defining operations on a c64 bitmap                  */
 /*********************************************************/
