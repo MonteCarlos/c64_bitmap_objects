@@ -1,13 +1,14 @@
 #pragma once
 
-#include "vic2_bitmap_objects_internal.h"
+#include "vic2_bitmap_objects.h"
+#include <cstring>
 
 typedef uint8_t VIC2_Bitmap_Byte_t;
 
 /*********************************************************/
 /*Class for defining operations on a c64 bitmap charblock*/
 /*********************************************************/
-class VIC2_CharblockBase {
+class VIC2_CharblockBase : public VIC2_StorableBitmapBase {
 protected:
     VIC2_Bitmap_Byte_t Rows[8];
 
@@ -17,7 +18,7 @@ public:
     }
 
     // Fill constructor
-    VIC2_CharblockBase (VIC2_Bitmap_Byte_t fillvalue) {
+    VIC2_CharblockBase (VIC2_Bitmap_Byte_t fillvalue) : VIC2_StorableBitmapBase(8) {
         memset ( Rows, fillvalue, sizeof (Rows) );
     }
 

@@ -13,8 +13,7 @@
 #include <cassert>
 #include <vector>
 
-
-typedef uint8_t VIC2_Bitmap_Byte_t;
+#include "vic2_bitmap_objects.h"
 
 // This is an internal header and it is desired to use namespace std in all libcode
 using namespace std;
