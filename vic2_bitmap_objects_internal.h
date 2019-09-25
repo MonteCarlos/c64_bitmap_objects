@@ -11,6 +11,7 @@
 #include <cstring>
 #include <array>
 #include <cassert>
+#include <vector>
 
 
 typedef uint8_t VIC2_Bitmap_Byte_t;
