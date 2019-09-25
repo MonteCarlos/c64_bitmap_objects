@@ -6,31 +6,47 @@
 
 class VIC2_StorableBitmapBase {
 private:
+    vector<VIC2_Bitmap_Byte_t> bitmap;
 public:
     VIC2_StorableBitmapBase(size_t N);
 
-    int fwrite (ofstream *file, void *data, size_t N);
-    int fwrite (ofstream &file, void *data, size_t N);
+    virtual int fwrite (ofstream &file, size_t N);
+    virtual int fwrite (ofstream &file, size_t N, size_t offset);
+    virtual int fwrite (ofstream &file);
 
-    ifstream &openForReading(string &filename);
-    ofstream &openForWriting(string &filename);
+    virtual int fwrite (string &filename, size_t N);
+    virtual int fwrite (string &filename, size_t N, size_t offset);
+    virtual int fwrite (string &filename);
 
-    bool fread (ifstream *file, size_t N);
-    bool fread (ifstream &file, size_t count);
+    ifstream &openRead(string &filename);
+    ofstream &openWrite(string &filename);
 
+    virtual int fread (ifstream &file, size_t N);
+    virtual int fread (ifstream &file, size_t N, size_t offset);
+    virtual int fread (ifstream &file);
+
+    virtual int fread (string &filename, size_t N);
+    virtual int fread (string &filename, size_t N, size_t offset);
+    virtual int fread (string &filename);
+
+    virtual VIC2_Bitmap_Byte_t &operator[](
 };
 
-int VIC2_StorableBitmapBase::fwrite (ofstream *file, void *data, size_t N) {
-    try{
-        file->write ( (const char *) data, N);
-    }
+int VIC2_StorableBitmapBase::fwrite (ofstream &file) {
+    file.write ( (const char*)bitmap.data(), bitmap.size());
 
-    return file->error();
+    return 0;
 }
 
-int VIC2_StorableBitmapBase::fwrite (ofstream &file, void *data, size_t N)  {
-    file.write ( (const char *) data, N);
-    return file.error();
+int VIC2_StorableBitmapBase::fwrite (ofstream &file, size_t N) {
+    file.write ( (const char*)bitmap.data(), N);
+
+    return 0;
+}
+
+int VIC2_StorableBitmapBase::fwrite (ofstream &file, size_t N, size_t offset)  {
+    file.write ( (const char *) bitmap.data()+offset, N);
+    return 0;
 }
 
 /*********************************************************/
