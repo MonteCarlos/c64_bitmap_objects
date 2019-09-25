@@ -34,6 +34,8 @@
 		</Compiler>
 		<Unit filename="charset2bitstream.cpp" />
 		<Unit filename="vic2_bitmap.h" />
+		<Unit filename="vic2_bitmap_objects.cpp" />
+		<Unit filename="vic2_bitmap_objects.h" />
 		<Unit filename="vic2_bitmap_objects_internal.h" />
 		<Unit filename="vic2_charblock.h" />
 		<Unit filename="vic2_charblock_base.h" />
