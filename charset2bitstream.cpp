@@ -35,7 +35,7 @@ int main (void) {
     try {
         cout << "Reading File chargen" << endl;
         ifstream rfile ("6x7pixcharset.bin", ios::binary);
-        srccharset.fread (&rfile);
+        srccharset.fread (rfile);
         rfile.close();
     }
     catch (...) {

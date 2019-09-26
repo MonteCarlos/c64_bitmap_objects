@@ -38,12 +38,12 @@ public:
         }
     }
 
-    bool fwrite (ofstream *file);
-    bool fread (ifstream *file);
-    bool fread (ifstream *file, size_t count);
+    bool fwrite (ofstream &file);
+    bool fread (ifstream &file);
+    bool fread (ifstream &file, size_t count);
 };
 
-bool VIC2_Bitmap::fwrite (ofstream *file) {
+bool VIC2_Bitmap::fwrite (ofstream &file) {
     for ( auto yit = Charblocks.begin(); yit < Charblocks.end(); ++yit ) {
         for (auto xit = (*yit).begin(); xit < (*yit).end(); ++xit ) {
             if ( ! ( (*xit).fwrite (file) ) ) return false;
@@ -53,13 +53,13 @@ bool VIC2_Bitmap::fwrite (ofstream *file) {
     return true;
 }
 
-bool VIC2_Bitmap::fread (ifstream *file, size_t count) {
-    file->read ( ( (char *) &Charblocks[0][0]) + readpos, count);
+bool VIC2_Bitmap::fread (ifstream &file, size_t count) {
+    file.read ( ( (char *) &Charblocks[0][0]) + readpos, count);
     readpos += count;
-    return file->fail();
+    return file.fail();
 }
 
-bool VIC2_Bitmap::fread (ifstream *file) {
+bool VIC2_Bitmap::fread (ifstream &file) {
     for ( auto yit = Charblocks.begin(); yit < Charblocks.end(); ++yit ) {
         for ( auto xit = (*yit).begin(); xit < (*yit).end(); ++xit ) {
             if ( ! ( (*xit).fread (file) ) ) return false;

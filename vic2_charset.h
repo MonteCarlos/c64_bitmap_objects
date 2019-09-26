@@ -10,14 +10,14 @@ public:
     VIC2_Charblock &operator[] (int index) {
         return chars[index];
     }
-    bool fread (ifstream *file);
+    bool fread (ifstream &file);
 };
 
-bool VIC2_Charset::fread (ifstream *file) {
+bool VIC2_Charset::fread (ifstream &file) {
     for (int i = 0; i < 256; ++i) {
         chars[i].fread (file);
 
-        if (file->fail() ) {
+        if (file.fail() ) {
             break;
             return true;
         }
