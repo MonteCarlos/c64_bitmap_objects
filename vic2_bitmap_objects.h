@@ -32,6 +32,7 @@ public:
     //virtual int fread (string &filename);
 
     virtual VIC2_Bitmap_Byte_t &operator[] (size_t index);
+    virtual VIC2_StorableBitmapBase &operator= (VIC2_StorableBitmapBase &&other);
     virtual VIC2_StorableBitmapBase &operator= (VIC2_StorableBitmapBase &other);
 
     virtual VIC2_Bitmap_Byte_t get (size_t index);
@@ -43,7 +44,7 @@ public:
 
     virtual size_t size();
 
-    virtual std::vector<VIC2_Bitmap_Byte_t>::iterator &begin();
-    virtual std::vector<VIC2_Bitmap_Byte_t>::iterator &end();
+    virtual std::vector<VIC2_Bitmap_Byte_t>::iterator begin();
+    virtual std::vector<VIC2_Bitmap_Byte_t>::iterator end();
 
 };

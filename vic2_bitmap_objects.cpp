@@ -51,23 +51,29 @@ void VIC2_StorableBitmapBase::set (VIC2_Bitmap_Byte_t *buf) {
 
 void VIC2_StorableBitmapBase::set (VIC2_StorableBitmapBase &other ) {
     bitmap.resize(other.size());
-    bitmap = other;
+    *this = other;
 }
 
 size_t VIC2_StorableBitmapBase::size(){
     return bitmap.size();
 }
 
-VIC2_StorableBitmapBase &VIC2_StorableBitmapBase::begin(){
+std::vector<VIC2_Bitmap_Byte_t>::iterator VIC2_StorableBitmapBase::begin(){
     return bitmap.begin();
 }
 
-VIC2_StorableBitmapBase &VIC2_StorableBitmapBase::end(){
+std::vector<VIC2_Bitmap_Byte_t>::iterator VIC2_StorableBitmapBase::end(){
     return bitmap.end();
 }
 
 VIC2_StorableBitmapBase &VIC2_StorableBitmapBase::operator= (VIC2_StorableBitmapBase &other){
     bitmap.resize(other.size());
     std::copy(other.begin(), other.end(), bitmap.begin());
+    return *this;
 }
 
+VIC2_StorableBitmapBase &VIC2_StorableBitmapBase::operator= (VIC2_StorableBitmapBase &&other){
+    bitmap.resize(other.size());
+    std::copy(other.begin(), other.end(), bitmap.begin());
+    return *this;
+}
