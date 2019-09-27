@@ -14,15 +14,15 @@ public:
 };
 
 bool VIC2_Charset::fread (ifstream &file) {
-    for (int i = 0; i < 256; ++i) {
-        chars[i].fread (file);
+    bool error = false;
 
-        if (file.fail() ) {
+    for (int i = 0; i < 256; ++i) {
+        if (chars[i].fread (file)){
+            error = true;
             break;
-            return true;
         }
     }
 
-    return false;
+    return error;
 }
 
