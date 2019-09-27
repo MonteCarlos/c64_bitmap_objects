@@ -50,30 +50,50 @@ void VIC2_StorableBitmapBase::set (VIC2_Bitmap_Byte_t *buf) {
 }
 
 void VIC2_StorableBitmapBase::set (VIC2_StorableBitmapBase &other ) {
-    bitmap.resize(other.size());
+    bitmap.resize (other.size() );
     *this = other;
 }
 
-size_t VIC2_StorableBitmapBase::size(){
+size_t VIC2_StorableBitmapBase::size() {
     return bitmap.size();
 }
 
-std::vector<VIC2_Bitmap_Byte_t>::iterator VIC2_StorableBitmapBase::begin(){
+std::vector<VIC2_Bitmap_Byte_t>::iterator VIC2_StorableBitmapBase::begin() {
     return bitmap.begin();
 }
 
-std::vector<VIC2_Bitmap_Byte_t>::iterator VIC2_StorableBitmapBase::end(){
+std::vector<VIC2_Bitmap_Byte_t>::iterator VIC2_StorableBitmapBase::end() {
     return bitmap.end();
 }
 
-VIC2_StorableBitmapBase &VIC2_StorableBitmapBase::operator= (VIC2_StorableBitmapBase &other){
-    bitmap.resize(other.size());
-    std::copy(other.begin(), other.end(), bitmap.begin());
+VIC2_StorableBitmapBase &VIC2_StorableBitmapBase::operator= (VIC2_StorableBitmapBase &other) {
+    if (&other != this) {
+        bitmap.resize (other.size() );
+        std::copy (other.begin(), other.end(), bitmap.begin() );
+    }
+
     return *this;
 }
 
-VIC2_StorableBitmapBase &VIC2_StorableBitmapBase::operator= (VIC2_StorableBitmapBase &&other){
-    bitmap.resize(other.size());
-    std::copy(other.begin(), other.end(), bitmap.begin());
-    return *this;
+VIC2_StorableBitmapBase &VIC2_StorableBitmapBase::operator= (VIC2_StorableBitmapBase &&other) {
+    return operator = (other);
 }
+
+uint8_t VIC2_StorableBitmapBase::lsr (size_t index, int n) {
+    uint8_t bits;
+
+    if (n >= 0) {
+        bits = bitmap[index] & ( (2 << n) - 1);
+    }
+    else {
+        bits = (bitmap[index] & ( ( (2 << n) - 1) << (8 - n) ) ) >> (8 - n);
+    }
+
+    bitmap[index] >>= n;
+    return bits;
+}
+
+bool VIC2_StorableBitmapBase::operator == (VIC2_StorableBitmapBase &other) {
+    return std::equal (other.begin(), other.end(), bitmap.begin() );
+}
+

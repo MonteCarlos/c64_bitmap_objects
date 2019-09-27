@@ -12,6 +12,29 @@ private:
 public:
     VIC2_StorableBitmapBase (size_t N);
 
+    // Accessors
+    virtual void set (VIC2_Bitmap_Byte_t fillvalue);
+    virtual void set (VIC2_StorableBitmapBase &other );
+    virtual VIC2_Bitmap_Byte_t get (size_t index);
+
+    void set (VIC2_Bitmap_Byte_t *buf);
+    virtual VIC2_Bitmap_Byte_t &operator[] (size_t index);
+
+    // Provided for access to bitmap
+    virtual std::vector<VIC2_Bitmap_Byte_t>::iterator begin();
+    virtual std::vector<VIC2_Bitmap_Byte_t>::iterator end();
+    virtual size_t size();
+
+    // Modifiers
+    virtual VIC2_StorableBitmapBase &operator= (VIC2_StorableBitmapBase &&other);
+    virtual VIC2_StorableBitmapBase &operator= (VIC2_StorableBitmapBase &other);
+    virtual uint8_t lsr (size_t index, int n);
+
+    // Comparison
+    virtual bool operator == (VIC2_StorableBitmapBase &other);
+
+    // File reading/writing
+
     //virtual int fwrite (ofstream &file, size_t N);
     //virtual int fwrite (ofstream &file, size_t N, size_t offset);
     virtual bool fwrite (std::ofstream &file);
@@ -31,20 +54,5 @@ public:
     //virtual int fread (string &filename, size_t N, size_t offset);
     //virtual int fread (string &filename);
 
-    virtual VIC2_Bitmap_Byte_t &operator[] (size_t index);
-    virtual VIC2_StorableBitmapBase &operator= (VIC2_StorableBitmapBase &&other);
-    virtual VIC2_StorableBitmapBase &operator= (VIC2_StorableBitmapBase &other);
-
-    virtual VIC2_Bitmap_Byte_t get (size_t index);
-
-    virtual void set (VIC2_Bitmap_Byte_t fillvalue);
-    virtual void set (VIC2_StorableBitmapBase &other );
-
-    void set (VIC2_Bitmap_Byte_t *buf);
-
-    virtual size_t size();
-
-    virtual std::vector<VIC2_Bitmap_Byte_t>::iterator begin();
-    virtual std::vector<VIC2_Bitmap_Byte_t>::iterator end();
 
 };
