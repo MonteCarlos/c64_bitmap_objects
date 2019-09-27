@@ -8,7 +8,7 @@
 /*********************************************************/
 class VIC2_CharblockBase : public VIC2_StorableBitmapBase {
 protected:
-    enum { BYTESPERCHARBLOCK };
+    enum { BYTESPERCHARBLOCK = 8 };
 public:
     // Default constructor
     VIC2_CharblockBase() : VIC2_CharblockBase (0) {
