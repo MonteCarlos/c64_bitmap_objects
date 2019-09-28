@@ -50,8 +50,10 @@ void VIC2_StorableBitmapBase::set (VIC2_Bitmap_Byte_t *buf) {
 }
 
 void VIC2_StorableBitmapBase::set (VIC2_StorableBitmapBase &other ) {
-    bitmap.resize (other.size() );
-    *this = other;
+    if ( &other != this) {
+        bitmap.resize (other.size() );
+        *this = other;
+    }
 }
 
 size_t VIC2_StorableBitmapBase::size() {
@@ -69,6 +71,8 @@ std::vector<VIC2_Bitmap_Byte_t>::iterator VIC2_StorableBitmapBase::end() {
 VIC2_StorableBitmapBase &VIC2_StorableBitmapBase::operator= (VIC2_StorableBitmapBase &other) {
     if (&other != this) {
         bitmap.resize (other.size() );
+
+        // Needs copy as other is NOT a R-Value reference
         std::copy (other.begin(), other.end(), bitmap.begin() );
     }
 
@@ -76,10 +80,17 @@ VIC2_StorableBitmapBase &VIC2_StorableBitmapBase::operator= (VIC2_StorableBitmap
 }
 
 VIC2_StorableBitmapBase &VIC2_StorableBitmapBase::operator= (VIC2_StorableBitmapBase &&other) {
-    return operator = (other);
+    if (&other != this) {
+        bitmap.resize (other.size() );
+
+        // Move is ok due to R-Value reference, which will be destroyed anyway
+        std::move(other.begin(), other.end(), bitmap.begin());
+    }
+
+    return *this;
 }
 
-uint8_t VIC2_StorableBitmapBase::lsr (size_t index, int n) {
+uint8_t VIC2_StorableBitmapBase::shiftRight (size_t index, int n) {
     uint8_t bits;
 
     if (n >= 0) {
@@ -97,3 +108,19 @@ bool VIC2_StorableBitmapBase::operator == (VIC2_StorableBitmapBase &other) {
     return std::equal (other.begin(), other.end(), bitmap.begin() );
 }
 
+void VIC2_StorableBitmapBase::setBit(size_t bitindex, bool value){
+    size_t byteindex = bitindex/8;
+    uint8_t mask = 0x80>>(bitindex & 7);
+    bitmap[byteindex] &= ~mask;
+    if (value) {
+        bitmap[byteindex] |= mask;
+    }
+}
+
+void VIC2_StorableBitmapBase::setBit(size_t bitindex){
+    setBit(bitindex, true);
+}
+
+void VIC2_StorableBitmapBase::clrBit(size_t bitindex){
+    setBit(bitindex, false);
+}
