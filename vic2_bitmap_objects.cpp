@@ -41,6 +41,10 @@ VIC2_Bitmap_Byte_t VIC2_StorableBitmapBase::get (size_t index) {
     return bitmap[index];
 }
 
+bool VIC2_StorableBitmapBase::getBit(size_t bitindex){
+    return bitmap[bitindex/8]&(0x80>>(bitindex&7));
+}
+
 void VIC2_StorableBitmapBase::set (VIC2_Bitmap_Byte_t fillvalue) {
     std::fill (bitmap.begin(), bitmap.end(), fillvalue);
 }
@@ -54,6 +58,10 @@ void VIC2_StorableBitmapBase::set (VIC2_StorableBitmapBase &other ) {
         bitmap.resize (other.size() );
         *this = other;
     }
+}
+
+void VIC2_StorableBitmapBase::set (size_t index, VIC2_Bitmap_Byte_t value){
+    bitmap[index] = value;
 }
 
 size_t VIC2_StorableBitmapBase::size() {
