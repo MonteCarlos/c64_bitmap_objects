@@ -44,6 +44,15 @@ public:
     virtual VIC2_StorableBitmapBase &operator= (VIC2_StorableBitmapBase &&other);
     virtual VIC2_StorableBitmapBase &operator= (VIC2_StorableBitmapBase &other);
     virtual uint8_t shiftRight (size_t index, int n);
+    virtual uint8_t rotateRight (size_t index, int n, uint8_t newBits);
+    virtual uint8_t shiftRightBy1 (size_t index);
+    virtual uint8_t shiftRightBy2 (size_t index);
+    virtual uint8_t rotateRightBy1 (size_t index, uint8_t newBits);
+    virtual uint8_t rotateRightBy2 (size_t index, uint8_t newBits);
+    virtual uint8_t shiftLeftBy1 (size_t index);
+    virtual uint8_t shiftLeftBy2 (size_t index);
+    virtual uint8_t rotateLeftBy1 (size_t index, uint8_t newBits);
+    virtual uint8_t rotateLeftBy2 (size_t index, uint8_t newBits);
 
     // Comparison
     virtual bool operator == (VIC2_StorableBitmapBase &other);
