@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "vic2_bitmap_objects.h"
+#include "vic2_bitmap_objectsex.h"
 
 // This is an internal header and it is desired to use namespace std in all libcode
 using namespace std;

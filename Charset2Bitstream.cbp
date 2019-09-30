@@ -38,6 +38,8 @@
 		<Unit filename="vic2_bitmap_objects.cpp" />
 		<Unit filename="vic2_bitmap_objects.h" />
 		<Unit filename="vic2_bitmap_objects_internal.h" />
+		<Unit filename="vic2_bitmap_objectsex.cpp" />
+		<Unit filename="vic2_bitmap_objectsex.h" />
 		<Unit filename="vic2_charblock.h" />
 		<Unit filename="vic2_charblock_base.cpp" />
 		<Unit filename="vic2_charblock_base.h" />

@@ -6,7 +6,7 @@
 /*********************************************************/
 /*Class for defining operations on a c64 bitmap charblock*/
 /*********************************************************/
-class VIC2_CharblockBase : public VIC2_StorableBitmapBase {
+class VIC2_CharblockBase : public VIC2_BitmapObjectsBase {
 protected:
     enum { BYTESPERCHARBLOCK = 8 };
 public:
@@ -15,8 +15,8 @@ public:
     }
 
     // Fill constructor
-    VIC2_CharblockBase (VIC2_Bitmap_Byte_t fillvalue) : VIC2_StorableBitmapBase(BYTESPERCHARBLOCK) {
-        VIC2_StorableBitmapBase::set(fillvalue);
+    VIC2_CharblockBase (VIC2_Bitmap_Byte_t fillvalue) : VIC2_BitmapObjectsBase(BYTESPERCHARBLOCK) {
+        VIC2_BitmapObjectsBase::set(fillvalue);
     }
 
 };

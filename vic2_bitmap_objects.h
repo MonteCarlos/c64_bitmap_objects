@@ -15,15 +15,15 @@ typedef uint8_t VIC2_Bitmap_Byte_t;
 /// - Getting size of the bitmap in bytes
 /// - Storing bitmap to disk / Reading bitmap from disk
 /// - Shifting bytes of the bitmap left/right
-class VIC2_StorableBitmapBase {
+class VIC2_BitmapObjectsBase {
 private:
     std::vector<VIC2_Bitmap_Byte_t> bitmap;
 public:
-    VIC2_StorableBitmapBase (size_t N);
+    VIC2_BitmapObjectsBase (size_t N);
 
     // Accessors
     virtual void set (VIC2_Bitmap_Byte_t fillvalue);
-    virtual void set (VIC2_StorableBitmapBase &other );
+    virtual void set (VIC2_BitmapObjectsBase &other );
     void set (VIC2_Bitmap_Byte_t *buf); // Not virtual. Should be used only on low-level basis
     virtual void set (size_t index, VIC2_Bitmap_Byte_t value);
 
@@ -41,21 +41,13 @@ public:
     virtual size_t size();
 
     // Modifiers
-    virtual VIC2_StorableBitmapBase &operator= (VIC2_StorableBitmapBase &&other);
-    virtual VIC2_StorableBitmapBase &operator= (VIC2_StorableBitmapBase &other);
+    virtual VIC2_BitmapObjectsBase &operator= (VIC2_BitmapObjectsBase &&other);
+    virtual VIC2_BitmapObjectsBase &operator= (VIC2_BitmapObjectsBase &other);
     virtual uint8_t shiftRight (size_t index, int n);
     virtual uint8_t rotateRight (size_t index, int n, uint8_t newBits);
-    virtual uint8_t shiftRightBy1 (size_t index);
-    virtual uint8_t shiftRightBy2 (size_t index);
-    virtual uint8_t rotateRightBy1 (size_t index, uint8_t newBits);
-    virtual uint8_t rotateRightBy2 (size_t index, uint8_t newBits);
-    virtual uint8_t shiftLeftBy1 (size_t index);
-    virtual uint8_t shiftLeftBy2 (size_t index);
-    virtual uint8_t rotateLeftBy1 (size_t index, uint8_t newBits);
-    virtual uint8_t rotateLeftBy2 (size_t index, uint8_t newBits);
 
     // Comparison
-    virtual bool operator == (VIC2_StorableBitmapBase &other);
+    virtual bool operator == (VIC2_BitmapObjectsBase &other);
 
     // File reading/writing
 
@@ -80,3 +72,6 @@ public:
 
 
 };
+
+
+
