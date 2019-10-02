@@ -4,6 +4,8 @@
 /// Implements some additional convenience methods not absolutely
 /// necessary for a base clas
 class VIC2_BitmapObjectsEx : public VIC2_BitmapObjectsBase{
+public:
+    using VIC2_BitmapObjectsBase::VIC2_BitmapObjectsBase;
 
     virtual uint8_t shiftRightBy1 (size_t index);
     virtual uint8_t shiftRightBy2 (size_t index);
