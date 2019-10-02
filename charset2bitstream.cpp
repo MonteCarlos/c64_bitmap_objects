@@ -4,6 +4,7 @@
 #include <vic2_charset.h>
 #include <vic2_bitmap.h>
 
+class lsr2;
 const int spriteCount = 26;
 const int xwidth = 6;
 const int ywidth = 7;
@@ -30,8 +31,8 @@ int main (void) {
     uint8_t mappedValues[256] = { 0 };
     uint8_t countOfUniqueValues = 0;
     uint8_t bits;
-    uint16_t destIndex = totalbytecount-3;
-
+    uint16_t destIndex = pixels.end()-pixels.begin()-3;
+    
     ofstream wfile;
 
 
@@ -58,7 +59,7 @@ int main (void) {
             //srccharset[ch + 1].lsr1 (row);
 
             for (int t = 2; t >= 0; --t) {
-                bits = srccharset[ch].lsr2 (row);
+                bits = srccharset[ch].shiftRightBy2(row);
                 pixels.rotateRightBy2(destIndex+t, bits);
             }
 
@@ -76,7 +77,7 @@ int main (void) {
     for (; bitCnt < 4; ++bitCnt) {
         //for (int row = 6; row >= 0; --row) {
         for (int t = 2; t >= 0; --t) {
-            bits = srccharset[0].lsr2 (0);
+            bits = srccharset[0].shiftRightBy2(0);
             pixels.rotateRightBy2(destIndex+t, bits);
         }
 
@@ -110,13 +111,13 @@ int main (void) {
 
         ++histo[pixels[i]];
     }
-
+    cout << endl;
     cout << "Unique value count: " << dec << (int) countOfUniqueValues << endl;
     cout << "** Histogramme: " << endl;
 
     for ( int i = 255; i >= 0; --i ) {
         if ( histo[i] ) {
-            cout << hex << setw (2) << i << ": " << (int) histo[i] << endl;
+            cout << hex << setw (2) << i << ": " << (int) histo[i] << ", ";
         }
     }
 
