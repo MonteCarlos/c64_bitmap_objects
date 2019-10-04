@@ -65,7 +65,9 @@ public:
     //virtual int fread (ifstream &file, size_t N);
     //virtual int fread (ifstream &file, size_t N, size_t offset);
     virtual bool fread (std::ifstream &file);
-
+    
+    virtual std::string ToString(size_t width);
+    
     //virtual int fread (string &filename, size_t N);
     //virtual int fread (string &filename, size_t N, size_t offset);
     //virtual int fread (string &filename);
