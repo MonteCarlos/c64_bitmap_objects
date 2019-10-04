@@ -43,12 +43,16 @@ int main (void) {
         ifstream rfile ("6x7pixcharset.bin", ios::binary);
         srccharset.fread (rfile);
         rfile.close();
+    
+        cout << "Read charset: " << endl << srccharset[0].ToString(1);
+        cout << endl << srccharset[25].ToString(1);
     }
+    
     catch (...) {
         cout << "Error reading charset!" << endl;
         return 1;
     }
-
+    
     int bitCnt = 0;
 
     for (int ch = 'z' - 'a'; ch >= 0; --ch) {

@@ -163,13 +163,14 @@ std::string VIC2_BitmapObjectsBase::ToString (size_t width) {
     stringstream strstream;
     
     for ( auto it = bitmap.begin(); it != bitmap.end(); ++it){
-        for ( uint8_t bit = 1; bit != 0; bit <<=1 ){
-        strstream << (((*it)&bit) ? "1" : "0");
-            if ( 0 == (it - bitmap.begin() + 1) % width )
-            {
-                strstream << endl;
-            }
+        for ( uint8_t bit = 0x80; bit != 0; bit >>=1 ){
+            strstream << (((*it)&bit) ? "1" : "0");
         }
+        if ( 0 == (it - bitmap.begin() + 1) % width )
+        {
+            strstream << endl;
+        }
+    
     }
     
     return strstream.str();
