@@ -18,6 +18,8 @@ public:
     VIC2_CharblockBase (VIC2_Bitmap_Byte_t fillvalue) : VIC2_BitmapObjectsEx(BYTESPERCHARBLOCK) {
         VIC2_BitmapObjectsBase::set(fillvalue);
     }
+    
+    virtual std::string ToString();
 };
 
 

@@ -3,8 +3,10 @@
 #include <vic2_charblock.h>
 #include <vic2_charset.h>
 #include <vic2_bitmap.h>
+#include "charset2bitstream.h"
 
-class lsr2;
+enum class Char2BitstreamError {NO_ERR, READCHARSET_ERR} ;
+
 const int spriteCount = 26;
 const int xwidth = 6;
 const int ywidth = 7;
@@ -12,55 +14,26 @@ const int bitsperchar = xwidth * ywidth; //42
 const int totalbitcnt = bitsperchar * spriteCount; //1092
 const int totalbytecount = 138;//(totalbitcnt + 4) / 8; //add 4 for proper rounding -> 137
 
+void ReadCharset(const string &filename, VIC2_Charset &charset){
+    cout << "Reading charset..." << endl;
+    ifstream rfile (filename, ios::binary);
+    if ( charset.fread (rfile) ){
+        cout << "Error reading charset!" << endl;
+        exit(-1);
+    }
+    rfile.close();
+}
 
-
-
-/*int openfiles(string basename)
-{
-}*/
-
-class PixelStream : public VIC2_BitmapObjectsEx {
-public:
-    PixelStream(size_t N) : VIC2_BitmapObjectsEx(N){}
-};
-
-int main (void) {
-    VIC2_Charset srccharset;
-    PixelStream pixels(totalbytecount);
-    uint8_t histo[256] = { 0 };
-    uint8_t mappedValues[256] = { 0 };
-    uint8_t countOfUniqueValues = 0;
+void ConvertCharset(VIC2_Charset &srccharset, PixelStream &pixels){
+    int bitCnt = 0;
     uint8_t bits;
     uint16_t destIndex = pixels.end()-pixels.begin()-3;
     
-    ofstream wfile;
-
-
-    cout << "*** C64 Bitmap objects ***\n";
-
-    try {
-        cout << "Reading File chargen" << endl;
-        ifstream rfile ("6x7pixcharset.bin", ios::binary);
-        srccharset.fread (rfile);
-        rfile.close();
-    
-        cout << "Read charset: " << endl << srccharset[0].ToString(1);
-        cout << endl << srccharset[25].ToString(1);
-    }
-    
-    catch (...) {
-        cout << "Error reading charset!" << endl;
-        return 1;
-    }
-    
-    int bitCnt = 0;
-
     for (int ch = 'z' - 'a'; ch >= 0; --ch) {
-        printf ("Converting Char %d\n", ch);
+        cout << "Converting Char" << ch << endl;
 
         for (int row = 6; row >= 0; --row) {
-            printf ("  %d, %d # ", row, bitCnt);
-            //srccharset[ch + 1].lsr1 (row);
+            cout << row << ", " << bitCnt << " # ";
 
             for (int t = 2; t >= 0; --t) {
                 bits = srccharset[ch].shiftRightBy2(row);
@@ -75,19 +48,39 @@ int main (void) {
             }
         }
 
-        printf ("\n");
+        cout << endl;
     }
 
     for (; bitCnt < 4; ++bitCnt) {
-        //for (int row = 6; row >= 0; --row) {
         for (int t = 2; t >= 0; --t) {
             bits = srccharset[0].shiftRightBy2(0);
             pixels.rotateRightBy2(destIndex+t, bits);
         }
+    }    
+}
 
-        //}
-    }
+int main (void) {
+    VIC2_Charset srccharset;
+    PixelStream pixels(totalbytecount);
+    uint8_t histo[256] = { 0 };
+    uint8_t mappedValues[256] = { 0 };
+    uint8_t countOfUniqueValues = 0;
+    uint16_t destIndex = pixels.end()-pixels.begin()-3;
+    int bitCnt = 0;
+    
+    ofstream wfile;
 
+
+    cout << "*** C64 Bitmap objects ***\n\n";
+
+    ReadCharset("6x7pixcharset.bin", srccharset);
+    
+    // Printout 'a' and 'z' to see that charset was read correctly
+    cout << srccharset[0].ToString();
+    cout << endl << srccharset[25].ToString();   
+
+    ConvertCharset(srccharset, pixels);
+    
     wfile.open ("bitstream", ios::binary);
     cout << "Writing output file !" << endl;
     if ( pixels.fwrite(wfile) ) {
@@ -160,10 +153,10 @@ int main (void) {
                 bitCnt = 0;
             }
 
-            puts (pattern);
+            cout << pattern << endl; 
         }
 
-        putchar ('\n');
+        cout << endl;
     }
 
 }
