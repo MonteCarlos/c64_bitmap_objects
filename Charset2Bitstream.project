@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="Charset2Bitstream" Version="10.0.0">
   <VirtualDirectory Name="include">
+    <File Name="charset2bitstream.h"/>
     <File Name="vic2_charset.h"/>
     <File Name="vic2_charblock_base.h"/>
     <File Name="vic2_charblock.h"/>
