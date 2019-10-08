@@ -1,8 +1,5 @@
 
-#include <vic2_charblock_base.h>
-#include <vic2_charblock.h>
-#include <vic2_charset.h>
-#include <vic2_bitmap.h>
+
 #include "charset2bitstream.h"
 
 #include <sstream>
@@ -20,40 +17,6 @@ const int bitsperchar = xwidth * ywidth; //42
 const int totalbitcnt = bitsperchar * spriteCount; //1092
 const int totalbytecount = 138;//(totalbitcnt + 4) / 8; //add 4 for proper rounding -> 137
 
-string PixelStream::ToString(void){
-    stringstream strstr;
-    char pattern[7] = {0};
-    auto it = this->end() - 3;
-    int bitCnt = 0;
-
-    for (int ch = 25; ch >= 0; --ch) {
-        for (int row = 6; row >= 0; --row) {
-            pattern[4] = it[2] & 2 ? '*' : ' ';
-            pattern[5] = it[2] & 1 ? '*' : ' ';
-            pattern[2] = it[1] & 2 ? '*' : ' ';
-            pattern[3] = it[1] & 1 ? '*' : ' ';
-            pattern[0] = it[0] & 2 ? '*' : ' ';
-            pattern[1] = it[0] & 1 ? '*' : ' ';
-
-            shiftRightBy2(it);
-            shiftRightBy2(it+1);
-            shiftRightBy2(it+2);
-
-            ++ bitCnt;
-
-            if (bitCnt >= 4) {
-                it -= 3;
-                bitCnt = 0;
-            }
-
-            strstr << pattern << endl; 
-        }
-
-        strstr << endl;
-    }
-    return move(strstr.str());
-}
-
 // Reads charset from a file "filename" from the harddisk.
 // Populates "charset" buffer with the file contents
 void ReadCharset(const string &filename, VIC2_Charset &charset){
@@ -64,57 +27,6 @@ void ReadCharset(const string &filename, VIC2_Charset &charset){
         exit(-1);
     }
     rfile.close();
-}
-
-// Converts charset into a specialized compact bit order for
-// efficient display in my contribution to the CSDB Sprite Font Compo 2019
-void PixelStream::ConvertCharset(VIC2_Charset &srccharset){
-    int bitCnt = 0;
-    uint8_t bits;
-    uint16_t destIndex = end()-begin()-3;
-    
-    for (int ch = 'z' - 'a'; ch >= 0; --ch) {
-        cout << "Converting Char" << ch << endl;
-
-        for (int row = 6; row >= 0; --row) {
-            cout << row << ", " << bitCnt << " # ";
-
-            for (int t = 2; t >= 0; --t) {
-                bits = srccharset[ch].shiftRightBy2(row);
-                rotateRightBy2(destIndex+t, bits);
-            }
-
-            ++ bitCnt;
-
-            if (bitCnt >= 4) {
-                destIndex -= 3;
-                bitCnt = 0;
-            }
-        }
-
-        cout << endl;
-    }
-
-    for (; bitCnt < 4; ++bitCnt) {
-        for (int t = 2; t >= 0; --t) {
-            bits = srccharset[0].shiftRightBy2(0);
-            rotateRightBy2(destIndex+t, bits);
-        }
-    }    
-}
-
-// Writes converted charset from the "pixels" buffer 
-// to disk to the file speicified by "filename"
-void WriteCharset(const string &filename, PixelStream &pixels){
-    ofstream wfile;
-    wfile.open (filename, ios::binary);
-    cout << "Writing output file !" << endl;
-    if ( pixels.fwrite(wfile) ) {
-        cout << "Fehler beim Schreiben der Datei " << filename << endl;
-        exit(-1);
-    }
-
-    wfile.close();
 }
 
 // Outputs byte vector "vec" formatted as a table
@@ -148,22 +60,6 @@ void PrintFormatted(const vector<uint8_t>::iterator &vec, int count, int width =
             cout << endl;
         }
     }
-}
-
-// Calculated occurence count for each byte value in the "bitmap"
-// Populates "histo" with the counts. Returns number of unique values.
-int MakeHisto(const vector<uint8_t>::iterator &bitmap, int count, vector<uint8_t> &histo){
-    uint8_t countOfUniqueValues = 0;
-    
-    for ( int i = 0; i < count; ++i ) {
-        if (0 == histo[bitmap[i]]) {
-            ++countOfUniqueValues;
-        }
-
-        ++histo[bitmap[i]];
-    }
-    
-    return countOfUniqueValues;
 }
 
 // Reads converted charset and displays it on the screen
@@ -218,11 +114,11 @@ int main (void) {
 
     pixels.ConvertCharset(srccharset);
     
-    WriteCharset("bitstream", pixels);
+    pixels.fwrite("bitstream");
     
     PrintFormatted(pixels.begin(), pixels.size(), 12);
     
-    countOfUniqueValues = MakeHisto(pixels.begin(), pixels.size(), histo);
+    countOfUniqueValues = pixels.MakeHisto(histo);
 
     cout << endl;
     cout << "Unique value count: " << dec << (int) countOfUniqueValues << endl << endl;

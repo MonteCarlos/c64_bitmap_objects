@@ -27,6 +27,21 @@ bool VIC2_BitmapObjectsBase::fwrite (ofstream &file) {
     return file.fail();
 }
 
+bool VIC2_BitmapObjectsBase::fwrite (const std::string &filename){
+    ofstream wfile;
+    bool writeError = false;
+    
+    wfile.open (filename, ios::binary);
+    if (wfile.fail()){
+        return true;
+    }
+    
+    writeError = this->fwrite(wfile);
+
+    wfile.close();
+    return writeError;
+}
+
 bool VIC2_BitmapObjectsBase::fread (ifstream &file) {
     //file.getsize();
     file.read ( (char *) bitmap.data(), bitmap.size() );

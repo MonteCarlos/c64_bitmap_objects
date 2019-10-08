@@ -9,7 +9,7 @@
 /*Class for defining operations on a c64 bitmap                  */
 /*********************************************************/
 class VIC2_Bitmap {
-private:
+protected:
     array <array <VIC2_Charblock, 40>, 25> Charblocks;
     size_t readpos = 0;
 public:
