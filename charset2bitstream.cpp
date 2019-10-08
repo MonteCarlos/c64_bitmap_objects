@@ -5,7 +5,8 @@
 #include <vic2_bitmap.h>
 #include "charset2bitstream.h"
 
-enum class Char2BitstreamError {NO_ERR, READCHARSET_ERR} ;
+enum class Char2BitstreamError:uint8_t {NO_ERR, READCHARSET_ERR} ;
+enum class Format_t:uint8_t {FMT_NOSPECIAL, FMT_SKIPZEROES};
 
 const int spriteCount = 26;
 const int xwidth = 6;
@@ -59,10 +60,66 @@ void ConvertCharset(VIC2_Charset &srccharset, PixelStream &pixels){
     }    
 }
 
+void WriteCharset(const string &filename, PixelStream &pixels){
+    ofstream wfile;
+    wfile.open (filename, ios::binary);
+    cout << "Writing output file !" << endl;
+    if ( pixels.fwrite(wfile) ) {
+        cout << "Fehler beim Schreiben der Datei " << filename << endl;
+        exit(-1);
+    }
+
+    wfile.close();
+}
+
+void PrintFormatted(const vector<uint8_t>::iterator &vec, int count, int width = 8, const Format_t format = Format_t::FMT_NOSPECIAL){
+    int col = 0;
+    
+    cout << "     ";
+    
+    for ( int i = 0; i < width; ++i) {
+        cout << hex << setw(2) << setfill('0') << i << "  ";
+    }
+    cout << endl;
+    for ( int i = 0; i < count; ++i ) {
+        if (!col) {
+            cout << hex << setw(2) << setfill('0') << i << ":  ";
+        }
+        
+        cout << setfill(' ');
+        
+        if ( (Format_t::FMT_SKIPZEROES == format) && (0 == (int)vec[i]) ){
+            cout << setw(2) << ' ' << ", ";
+        }else{
+            cout << hex << setw (2) << (int)vec[i] << ", ";
+        }
+        
+        col = (col + 1) % width;
+
+        if (!col) {
+            cout << endl;
+        }
+    }
+}
+
+int MakeHisto(const vector<uint8_t>::iterator &bitmap, int count, vector<uint8_t> &histo){
+    uint8_t countOfUniqueValues = 0;
+    
+    for ( int i = 0; i < count; ++i ) {
+        if (0 == histo[bitmap[i]]) {
+            ++countOfUniqueValues;
+        }
+
+        ++histo[bitmap[i]];
+    }
+    
+    return countOfUniqueValues;
+}
+
 int main (void) {
     VIC2_Charset srccharset;
     PixelStream pixels(totalbytecount);
-    uint8_t histo[256] = { 0 };
+    vector<uint8_t> histo(256, 0);
     uint8_t mappedValues[256] = { 0 };
     uint8_t countOfUniqueValues = 0;
     uint16_t destIndex = pixels.end()-pixels.begin()-3;
@@ -81,45 +138,19 @@ int main (void) {
 
     ConvertCharset(srccharset, pixels);
     
-    wfile.open ("bitstream", ios::binary);
-    cout << "Writing output file !" << endl;
-    if ( pixels.fwrite(wfile) ) {
-        cout << "Fehler beim Schreiben der Datei " << "bitstream" << endl;
-        return 1;
-    }
-
-    wfile.close();
+    WriteCharset("bitstream", pixels);
     
-    int col = 0;
+    PrintFormatted(pixels.begin(), pixels.size(), 12);
+    
+    countOfUniqueValues = MakeHisto(pixels.begin(), pixels.size(), histo);
 
-    for ( int i = 0; i < totalbytecount; ++i ) {
-        cout << hex << setw (2) << (int) pixels[i] << ", ";
-
-        if (!col) {
-            cout << endl;
-        }
-
-        col = (col + 1) % 6;
-
-        if (0 == histo[pixels[i]]) {
-            mappedValues[pixels[i]] = countOfUniqueValues;
-            ++countOfUniqueValues;
-        }
-
-        ++histo[pixels[i]];
-    }
     cout << endl;
-    cout << "Unique value count: " << dec << (int) countOfUniqueValues << endl;
+    cout << "Unique value count: " << dec << (int) countOfUniqueValues << endl << endl;
+    
     cout << "** Histogramme: " << endl;
-
-    for ( int i = 255; i >= 0; --i ) {
-        if ( histo[i] ) {
-            cout << hex << setw (2) << i << ": " << (int) histo[i] << ", ";
-        }
-    }
-
+    PrintFormatted(histo.begin(), histo.size(), 16, Format_t::FMT_SKIPZEROES);
+    
     cout << endl;
-
 
     cout << "Mapped values: " << endl;
 
