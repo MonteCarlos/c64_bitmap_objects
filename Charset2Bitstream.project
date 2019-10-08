@@ -11,6 +11,8 @@
     <File Name="vic2_bitmap.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="src">
+    <File Name="vic2_charset.cpp"/>
+    <File Name="pixelstream.cpp"/>
     <File Name="vic2_charblock_base.cpp"/>
     <File Name="vic2_bitmap_objectsex.cpp"/>
     <File Name="vic2_bitmap_objects.cpp"/>

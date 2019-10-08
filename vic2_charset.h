@@ -13,16 +13,4 @@ public:
     bool fread (ifstream &file);
 };
 
-bool VIC2_Charset::fread (ifstream &file) {
-    bool error = false;
-
-    for (int i = 0; i < 256; ++i) {
-        if (chars[i].fread (file)){
-            error = true;
-            break;
-        }
-    }
-
-    return error;
-}
 
