@@ -1,21 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Workspace Name="spritefont" Database="" Version="10.0.0">
-  <Project Name="Charset2Bitstream" Path="Charset2Bitstream.project" Active="Yes"/>
-  <BuildMatrix>
-    <WorkspaceConfiguration Name="Debug" Selected="yes">
-      <Environment/>
-      <Project Name="spritefont" ConfigName="sprfont_wth_viewer2"/>
-      <Project Name="spritefont" ConfigName="sprfont_wth_viewer3"/>
-      <Project Name="spritefont" ConfigName="sprfont_wth_viewer3_fill"/>
-      <Project Name="Charset2Bitstream" ConfigName="Debug"/>
-    </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release" Selected="yes">
-      <Environment/>
-      <Project Name="spritefont" ConfigName="sprfont_wth_viewer"/>
-      <Project Name="spritefont" ConfigName="sprfont_wth_viewer2"/>
-      <Project Name="spritefont" ConfigName="sprfont_wth_viewer3"/>
-      <Project Name="spritefont" ConfigName="sprfont_wth_viewer3_fill"/>
-      <Project Name="Charset2Bitstream" ConfigName="Release"/>
-    </WorkspaceConfiguration>
-  </BuildMatrix>
-</CodeLite_Workspace>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="Workspace">
+		<Project filename="spritefont.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>
