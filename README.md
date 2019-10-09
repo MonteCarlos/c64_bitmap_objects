@@ -16,8 +16,8 @@ following base functionality is implemented:
 - iterators to iterate over bytes of bitmap
 - shifting bytes
 
-the derived classes are bitmap Objects ex, charblock base, charblock, (hires)bitmap
-they provide the necessary byte count to store a full char, a full charset or a full hires bitmap. 
+the derived classes are bitmap Objects ex, charblock base, charblock, whereas the  (hires)bitmap is not a descendent of the base class it just contains an array of charblocks.
+the classes provide the necessary byte count to store a full char, a full charset or a full hires bitmap. 
 you don't need to specify that manually.
 furthermore, the methods are more specialized for the kind of objects they hold.
 f.e. the (hires) bitmap class provides stream reading/writing for a certain char of the bitmap 

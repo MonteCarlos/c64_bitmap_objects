@@ -1,11 +1,14 @@
 #pragma once
-
+/**
+ * @class VIC2_CharblockBase
+ * @author Monte Carlos
+ * @date 09/10/19
+ * @file vic2_charblock_base.h
+ * @brief Class for defining operations on a c64 char matrices or charblocks of a larger bitmap
+ */
 #include "vic2_bitmap_objectsex.h"
 #include <cstring>
 
-/*********************************************************/
-/*Class for defining operations on a c64 bitmap charblock*/
-/*********************************************************/
 class VIC2_CharblockBase : public VIC2_BitmapObjectsEx {
 protected:
     enum { BYTESPERCHARBLOCK = 8 };

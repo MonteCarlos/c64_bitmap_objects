@@ -1,8 +1,16 @@
 #pragma once
+/**
+ * @class VIC2_BitmapObjectsEx
+ * @author Monte Carlos
+ * @date 09/10/19
+ * @file vic2_bitmap_objectsex.h
+ * @brief Implements some additional convenience methods which i did not
+ * want to put into the base class
+ */
 #include "vic2_bitmap_objects_internal.h"
 
-/// Implements some additional convenience methods not absolutely
-/// necessary for a base clas
+/// 
+/// 
 class VIC2_BitmapObjectsEx : public VIC2_BitmapObjectsBase{
 public:
     using VIC2_BitmapObjectsBase::VIC2_BitmapObjectsBase;
