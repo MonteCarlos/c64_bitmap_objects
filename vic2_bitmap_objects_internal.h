@@ -1,12 +1,18 @@
 #pragma once
 
+/**
+ * \file
+ * 
+ * This header file should not be used by external code. It is dedicated to the 
+ * library sources.
+ * **/
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
 #include <cstdlib>
 #include <climits>
 #include <string>
-//#include <windows.h>
 #include <cmath>
 #include <cstring>
 #include <array>
