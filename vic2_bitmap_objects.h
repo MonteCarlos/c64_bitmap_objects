@@ -2,6 +2,8 @@
 
 /**
 
+\mainpage
+ 
 \author Monte Carlos / Cascade
 \date 08.09.2019
 \version 0.5.0
@@ -50,18 +52,16 @@ class VIC2_BitmapObjectsBase {
 protected:
     std::vector<VIC2_Bitmap_Byte_t> bitmap;
 public:
+    // Constructors / Assignment
     VIC2_BitmapObjectsBase (size_t N);
-
+    virtual VIC2_BitmapObjectsBase &operator= (VIC2_BitmapObjectsBase &&other);
+    virtual VIC2_BitmapObjectsBase &operator= (VIC2_BitmapObjectsBase &other);
+    
     // Accessors
     virtual void set (VIC2_Bitmap_Byte_t fillvalue);
     virtual void set (VIC2_BitmapObjectsBase &other );
-    void set (VIC2_Bitmap_Byte_t *buf); // Not virtual. Should be used only on low-level basis
     virtual void set (size_t index, VIC2_Bitmap_Byte_t value);
-
-    virtual void setBit(size_t bitindex);
-    virtual void clrBit(size_t bitindex);
-    virtual void setBit(size_t bitindex, bool value);
-    virtual bool getBit(size_t bitindex);
+    void set (VIC2_Bitmap_Byte_t *buf); // Not virtual. Should be used only on low-level basis
 
     virtual VIC2_Bitmap_Byte_t &operator[] (size_t index);
     virtual VIC2_Bitmap_Byte_t get (size_t index);
@@ -72,38 +72,33 @@ public:
     virtual size_t size();
 
     // Modifiers
-    virtual VIC2_BitmapObjectsBase &operator= (VIC2_BitmapObjectsBase &&other);
-    virtual VIC2_BitmapObjectsBase &operator= (VIC2_BitmapObjectsBase &other);
     virtual uint8_t shiftRight (size_t index, int n);
     virtual uint8_t rotateRight (size_t index, int n, uint8_t newBits);
+    virtual void setBit(size_t bitindex);
+    virtual void clrBit(size_t bitindex);
+    virtual void setBit(size_t bitindex, bool value);
+    virtual bool getBit(size_t bitindex);
 
     // Comparison
     virtual bool operator == (VIC2_BitmapObjectsBase &other);
 
     // File reading/writing
-
-    //virtual int fwrite (ofstream &file, size_t N);
-    //virtual int fwrite (ofstream &file, size_t N, size_t offset);
     virtual bool fwrite (std::ofstream &file);
-
     virtual bool fwrite (const std::string &filename);
-    //virtual int fwrite (string &filename, size_t N);
-    //virtual int fwrite (string &filename, size_t N, size_t offset);
+    virtual bool fwrite (std::ofstream &file, size_t N, size_t offset = 0);
+    virtual bool fwrite (const std::string &filename, size_t N, size_t offset = 0);
 
+    virtual bool fread (std::ifstream &file);
+    virtual bool fread (std::ifstream &file, size_t N, size_t offset=0);
+    virtual bool fread (std::string &filename);
+    virtual bool fread (std::string &filename, size_t N, size_t offset=0);
+    
     std::ifstream &openRead (std::string &filename);
     std::ofstream &openWrite (std::string &filename);
-
-    //virtual int fread (ifstream &file, size_t N);
-    //virtual int fread (ifstream &file, size_t N, size_t offset);
-    virtual bool fread (std::ifstream &file);
     
+    // For displaying
     virtual std::string ToString(size_t width);
-    
-    //virtual int fread (string &filename, size_t N);
-    //virtual int fread (string &filename, size_t N, size_t offset);
-    //virtual int fread (string &filename);
-
-
+   
 };
 
 

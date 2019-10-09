@@ -8,26 +8,21 @@ VIC2_BitmapObjectsBase::VIC2_BitmapObjectsBase (size_t N) {
     bitmap.resize (N);
 }
 
-
-/*int VIC2_StorableBitmapBase::fwrite (ofstream &file, size_t N) {
-    file.write ( (const char*)bitmap.data(), N);
-
-    return 0;
-}
-
-int VIC2_StorableBitmapBase::fwrite (ofstream &file, size_t N, size_t offset)  {
-    file.write ( (const char *) bitmap.data()+offset, N);
-    return 0;
-}
-*/
-
 bool VIC2_BitmapObjectsBase::fwrite (ofstream &file) {
-    file.write ( (const char *) bitmap.data(), bitmap.size() );
+    return this->fwrite ( file, bitmap.size(), 0 );
+}
+
+bool VIC2_BitmapObjectsBase::fwrite (const std::string &filename){
+    return this->fwrite(filename, bitmap.size(), 0);
+}
+
+bool VIC2_BitmapObjectsBase::fwrite (ofstream &file, size_t N, size_t offset){
+    file.write ( (const char *) bitmap.data()+offset, N );
 
     return file.fail();
 }
 
-bool VIC2_BitmapObjectsBase::fwrite (const std::string &filename){
+bool VIC2_BitmapObjectsBase::fwrite (const string &filename, size_t N, size_t offset){
     ofstream wfile;
     bool writeError = false;
     
@@ -36,19 +31,42 @@ bool VIC2_BitmapObjectsBase::fwrite (const std::string &filename){
         return true;
     }
     
-    writeError = this->fwrite(wfile);
+    writeError = this->fwrite(wfile, N, offset);
 
     wfile.close();
     return writeError;
 }
-
+    
 bool VIC2_BitmapObjectsBase::fread (ifstream &file) {
-    //file.getsize();
+    this->fread ( file, bitmap.size(), 0 );
+
+    return file.fail();
+}
+
+bool VIC2_BitmapObjectsBase::fread (ifstream &file, size_t N, size_t offset) {
+    file.seekg(offset, ios_base::cur);
     file.read ( (char *) bitmap.data(), bitmap.size() );
 
     return file.fail();
 }
 
+bool VIC2_BitmapObjectsBase::fread (std::string &filename){
+    return this->fread(filename, bitmap.size(), 0);
+}
+
+bool VIC2_BitmapObjectsBase::fread (std::string &filename, size_t N, size_t offset){
+    ifstream rfile;
+    bool readError = false;
+    
+    rfile.open (filename, ios::binary);
+    if (rfile.fail()){
+        return true;
+    }
+    readError = this->fread(rfile, N, offset);
+    rfile.close();
+    return readError;
+}
+    
 VIC2_Bitmap_Byte_t &VIC2_BitmapObjectsBase::operator[] (size_t index) {
     return bitmap[index];
 }
