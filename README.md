@@ -25,3 +25,8 @@ but also for the complete bitmap
 it is possible to define own derived classes. 
 this is shown in the demo for the csdb sprite font compo.
 the base class has been used also in plasmascascade with some modifications
+
+## Error handling
+This library contains primitive error handling, only. F.e. it returns the fail flag if some iostream operation fail but it does not handle exceptions, though.
+So possibly it is the best to encapsulate calls to class methods in a big global try - catch, to be sure. This way out of range exceptions accessing bitmaps can be handled.
+The library itself does not check boundaries.
