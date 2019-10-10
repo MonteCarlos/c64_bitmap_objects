@@ -39,7 +39,7 @@ See the file PlasmaIntoBitmap.cpp, which however is not up-to-date anymore.
 #include <vector>
 #include <iostream>
 #include <string>
-
+#include <cmath>
 /// Alias definition for a byte of a bitmap
 typedef uint8_t VIC2_Bitmap_Byte_t;
 
@@ -57,8 +57,10 @@ protected:
     std::vector<VIC2_Bitmap_Byte_t> bitmap;
 public:
     // Constructors / Assignment
-    VIC2_BitmapObjectsBase (size_t N); // Given size in bytes and approx square
-    VIC2_BitmapObjectsBase (size_t N, int width); // Given size in bytes but width bits in x direction
+    // The default constructor attemps to put the bitmap into a squared geometry
+    VIC2_BitmapObjectsBase (size_t N):VIC2_BitmapObjectsBase(N, floor(sqrt(N*8))){} 
+    // This constructor explicitey lets you specify the width of the bitmap in bits
+    VIC2_BitmapObjectsBase (size_t N, int width); 
     
     virtual VIC2_BitmapObjectsBase &operator= (VIC2_BitmapObjectsBase &&other);
     virtual VIC2_BitmapObjectsBase &operator= (VIC2_BitmapObjectsBase &other);
