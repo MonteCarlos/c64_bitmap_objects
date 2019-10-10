@@ -65,3 +65,23 @@ uint8_t VIC2_BitmapObjectsEx::rotateLeftBy1 (const std::vector<uint8_t>::iterato
 uint8_t VIC2_BitmapObjectsEx::rotateLeftBy2 (const std::vector<uint8_t>::iterator &it, uint8_t newBits){
     return rotateLeftBy2(it-begin(), newBits);
 }
+
+size_t VIC2_BitmapObjectsEx::getBitIndexFromX_Y(size_t x, size_t y){
+    return (size_t)(y*bitmapWidth+x);
+}
+
+void VIC2_BitmapObjectsEx::setBit(int x, int y){
+    VIC2_BitmapObjectsBase::setBit(getBitIndexFromX_Y(x,y));
+}
+
+void VIC2_BitmapObjectsEx::clrBit(int x, int y){
+    VIC2_BitmapObjectsBase::clrBit(getBitIndexFromX_Y(x,y));  
+}
+
+void VIC2_BitmapObjectsEx::setBit(int x, int y, bool value){
+    VIC2_BitmapObjectsBase::setBit(getBitIndexFromX_Y(x,y), value);
+}
+
+bool VIC2_BitmapObjectsEx::getBit(int x, int y){
+    return VIC2_BitmapObjectsBase::getBit(getBitIndexFromX_Y(x,y));
+}

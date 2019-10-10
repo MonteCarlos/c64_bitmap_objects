@@ -1,12 +1,19 @@
 #include "vic2_bitmap_objects_internal.h"
 #include <algorithm>
 #include <sstream>
+#include <cmath>
 
 using namespace std;
 
 VIC2_BitmapObjectsBase::VIC2_BitmapObjectsBase (size_t N) {
-    bitmap.resize (N);
+    VIC2_BitmapObjectsBase(N, floor(sqrt(N*8)));
 }
+
+VIC2_BitmapObjectsBase::VIC2_BitmapObjectsBase (size_t N, int width) {
+    bitmap.resize (N);
+    bitmapWidth = width; // Default bitmap is approx a square
+}
+
 
 bool VIC2_BitmapObjectsBase::fwrite (ofstream &file) {
     return this->fwrite ( file, bitmap.size(), 0 );
@@ -190,6 +197,10 @@ void VIC2_BitmapObjectsBase::setBit (size_t bitindex) {
 
 void VIC2_BitmapObjectsBase::clrBit (size_t bitindex) {
     setBit (bitindex, false);
+}
+
+std::string VIC2_BitmapObjectsBase::ToString(){
+    return ToString(bitmapWidth);
 }
 
 std::string VIC2_BitmapObjectsBase::ToString (size_t width) {
