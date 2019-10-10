@@ -5,10 +5,6 @@
 
 using namespace std;
 
-VIC2_BitmapObjectsBase::VIC2_BitmapObjectsBase (size_t N) {
-    VIC2_BitmapObjectsBase(N, floor(sqrt(N*8)));
-}
-
 VIC2_BitmapObjectsBase::VIC2_BitmapObjectsBase (size_t N, int width) {
     bitmap.resize (N);
     bitmapWidth = width; // Default bitmap is approx a square
