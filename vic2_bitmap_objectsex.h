@@ -12,6 +12,8 @@
 /// 
 /// 
 class VIC2_BitmapObjectsEx : public VIC2_BitmapObjectsBase{
+protected:    
+    inline size_t getBitIndexFromX_Y(size_t x, size_t y);
 public:
     using VIC2_BitmapObjectsBase::VIC2_BitmapObjectsBase;
 
@@ -32,5 +34,10 @@ public:
     virtual uint8_t shiftLeftBy2 (const std::vector<uint8_t>::iterator &it);
     virtual uint8_t rotateLeftBy1 (const std::vector<uint8_t>::iterator &it, uint8_t newBits);
     virtual uint8_t rotateLeftBy2 (const std::vector<uint8_t>::iterator &it, uint8_t newBits);
+
+    virtual void setBit(int x, int y);
+    virtual void clrBit(int x, int y);
+    virtual void setBit(int x, int y, bool value);
+    virtual bool getBit(int x, int y);
 };
 
