@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="vic2_bitmap_objects" Database="vic2_bitmap_objects.tags" Version="10.0.0">
   <Project Name="Charset2Bitstream" Path="Charset2Bitstream.project" Active="Yes"/>
+  <Project Name="vic2_bitmap_objects" Path="vic2_bitmap_objects.project"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Environment/>
       <Project Name="Charset2Bitstream" ConfigName="Debug"/>
+      <Project Name="vic2_bitmap_objects" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
       <Project Name="Charset2Bitstream" ConfigName="Release"/>
+      <Project Name="vic2_bitmap_objects" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

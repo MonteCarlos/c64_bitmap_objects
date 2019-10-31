@@ -2,22 +2,9 @@
 <CodeLite_Project Name="Charset2Bitstream" Version="10.0.0">
   <VirtualDirectory Name="include">
     <File Name="charset2bitstream.h"/>
-    <File Name="vic2_charset.h"/>
-    <File Name="vic2_charblock_base.h"/>
-    <File Name="vic2_charblock.h"/>
-    <File Name="vic2_bitmap_objectsex.h"/>
-    <File Name="vic2_bitmap_objects_internal.h"/>
-    <File Name="vic2_bitmap_objects.h"/>
-    <File Name="vic2_bitmap.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="src">
-    <File Name="vic2_sprites.cpp"/>
-    <File Name="vic2_bitmap.cpp"/>
-    <File Name="vic2_charset.cpp"/>
     <File Name="pixelstream.cpp"/>
-    <File Name="vic2_charblock_base.cpp"/>
-    <File Name="vic2_bitmap_objectsex.cpp"/>
-    <File Name="vic2_bitmap_objects.cpp"/>
     <File Name="charset2bitstream.cpp"/>
   </VirtualDirectory>
   <Description/>
