@@ -10,7 +10,15 @@
 *.run
 *.lol
 *.log
+*.tags
+*.zip
+*.backup
+*.mk
 out.src
 bin/
 obj/
+Charset2BitStream.*
 .objs/
+bitstream
+charset
+expandRomChar
