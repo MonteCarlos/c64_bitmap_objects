@@ -13,7 +13,8 @@ vic2 Bitmap Objects base class: provides functionality to access bitmaps in comm
 the methods are NOT specialized for a certain bitmap format like char or sprite or hires/mc.
 to construct a bitmap object just pass the constructor the needed number of bytes.
 f.e of you want to store sprite data, reserve 64 bytes, for a char reserve 8 bytes. 
-specialized functionality is provided by the derived classes, too. so normally, the burden of specifying numeric literals is taken away from you.
+specialized functionality is provided by the derived classes, too. 
+so normally, the burden of specifying numeric literals is taken away from you.
 
 The following base functionality is implemented:
 
@@ -27,8 +28,10 @@ the derived classes are bitmap Objects ex, charblock base, charblock, (hires)bit
 they provide the necessary byte count to store a full char, a full charset or a full hires bitmap. 
 you don't need to specify that manually.
 furthermore, the methods are more specialized for the kind of objects they hold.
-f.e. the (hires) bitmap class provides stream reading/writing for a certain char of the bitmap but also for the complete bitmap
-It is possible to define own derived classes, too. This is shown in the demo for the csdb sprite font compo.
+f.e. the (hires) bitmap class provides stream reading/writing for a certain char of the bitmap 
+but also for the complete bitmap
+It is possible to define own derived classes, too. 
+This is shown in the demo for the csdb sprite font compo.
 The base class has been used also in plasmascascade with some modifications: 
 See the file PlasmaIntoBitmap.cpp, which however is not up-to-date anymore.
 

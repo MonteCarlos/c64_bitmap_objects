@@ -1,5 +1,3 @@
-# c64_bitmap_objects
-Classes to deal with VIC (C64) bitmap formats like chars, charsets, sprites, hires or generic ones.
 
 vic2 Bitmap Objects base class: provides functionality to access bitmaps in common. 
 the methods are NOT specialized for a certain bitmap format like char or sprite or hires/mc.
